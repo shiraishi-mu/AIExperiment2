@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; オセロゲームの基本実装 – 知能工学実験Ⅱ</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./gametree.html" rel="next">
+<link href="./game.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-9ece03dab9959ef5c886c0d317450186.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./reversi.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">オセロゲームの基本実装</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">知能工学実験Ⅱ</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">はじめに</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./history.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">人工知能の歴史</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">環境構築と準備</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Gitによるバージョン管理</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testdev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><code>pytest</code> によるテスト駆動</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">ゲームと探索</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reversi.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">オセロゲームの基本実装</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gametree.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">minimax 法によるゲーム木探索</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alphabeta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">αβ 枝刈り</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huristics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">ヒューリスティック評価関数</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">評価関数の改良と最終課題</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">メタヒューリスティクスによる評価関数の最適化</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">発展：機械学習による評価関数の構築</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./network.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">対戦実験と GUI</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">まとめと評価</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">参考文献</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#本章の到達目標" id="toc-本章の到達目標" class="nav-link active" data-scroll-target="#本章の到達目標"><span class="header-section-number">7.1</span> 本章の到達目標</a></li>
+  <li><a href="#オセロゲームのルール" id="toc-オセロゲームのルール" class="nav-link" data-scroll-target="#オセロゲームのルール"><span class="header-section-number">7.2</span> オセロゲームのルール</a></li>
+  <li><a href="#盤面の表現" id="toc-盤面の表現" class="nav-link" data-scroll-target="#盤面の表現"><span class="header-section-number">7.3</span> 盤面の表現</a>
+  <ul class="collapse">
+  <li><a href="#例題定数を定義する" id="toc-例題定数を定義する" class="nav-link" data-scroll-target="#例題定数を定義する"><span class="header-section-number">7.3.1</span> 例題：定数を定義する</a></li>
+  <li><a href="#練習1初期盤面を作る" id="toc-練習1初期盤面を作る" class="nav-link" data-scroll-target="#練習1初期盤面を作る"><span class="header-section-number">7.3.2</span> 練習1：初期盤面を作る</a></li>
+  </ul></li>
+  <li><a href="#手番と表示" id="toc-手番と表示" class="nav-link" data-scroll-target="#手番と表示"><span class="header-section-number">7.4</span> 手番と表示</a>
+  <ul class="collapse">
+  <li><a href="#練習2手番を交代する" id="toc-練習2手番を交代する" class="nav-link" data-scroll-target="#練習2手番を交代する"><span class="header-section-number">7.4.1</span> 練習2：手番を交代する</a></li>
+  <li><a href="#練習3盤面を表示する" id="toc-練習3盤面を表示する" class="nav-link" data-scroll-target="#練習3盤面を表示する"><span class="header-section-number">7.4.2</span> 練習3：盤面を表示する</a></li>
+  </ul></li>
+  <li><a href="#盤面の走査" id="toc-盤面の走査" class="nav-link" data-scroll-target="#盤面の走査"><span class="header-section-number">7.5</span> 盤面の走査</a>
+  <ul class="collapse">
+  <li><a href="#練習41方向に反転できる数を数える" id="toc-練習41方向に反転できる数を数える" class="nav-link" data-scroll-target="#練習41方向に反転できる数を数える"><span class="header-section-number">7.5.1</span> 練習4：1方向に反転できる数を数える</a></li>
+  <li><a href="#練習5合法手を判定する" id="toc-練習5合法手を判定する" class="nav-link" data-scroll-target="#練習5合法手を判定する"><span class="header-section-number">7.5.2</span> 練習5：合法手を判定する</a></li>
+  <li><a href="#練習6どこかに打てるかを判定する" id="toc-練習6どこかに打てるかを判定する" class="nav-link" data-scroll-target="#練習6どこかに打てるかを判定する"><span class="header-section-number">7.5.3</span> 練習6：どこかに打てるかを判定する</a></li>
+  </ul></li>
+  <li><a href="#盤面の更新" id="toc-盤面の更新" class="nav-link" data-scroll-target="#盤面の更新"><span class="header-section-number">7.6</span> 盤面の更新</a>
+  <ul class="collapse">
+  <li><a href="#練習7石を置き反転する" id="toc-練習7石を置き反転する" class="nav-link" data-scroll-target="#練習7石を置き反転する"><span class="header-section-number">7.6.1</span> 練習7：石を置き、反転する</a></li>
+  </ul></li>
+  <li><a href="#終局と評価" id="toc-終局と評価" class="nav-link" data-scroll-target="#終局と評価"><span class="header-section-number">7.7</span> 終局と評価</a>
+  <ul class="collapse">
+  <li><a href="#練習8石の数を数える" id="toc-練習8石の数を数える" class="nav-link" data-scroll-target="#練習8石の数を数える"><span class="header-section-number">7.7.1</span> 練習8：石の数を数える</a></li>
+  <li><a href="#練習9盤面の基本評価値を返す" id="toc-練習9盤面の基本評価値を返す" class="nav-link" data-scroll-target="#練習9盤面の基本評価値を返す"><span class="header-section-number">7.7.2</span> 練習9：盤面の基本評価値を返す</a></li>
+  <li><a href="#練習10盤面の状態を判定する" id="toc-練習10盤面の状態を判定する" class="nav-link" data-scroll-target="#練習10盤面の状態を判定する"><span class="header-section-number">7.7.3</span> 練習10：盤面の状態を判定する</a></li>
+  <li><a href="#練習11結果を表示する" id="toc-練習11結果を表示する" class="nav-link" data-scroll-target="#練習11結果を表示する"><span class="header-section-number">7.7.4</span> 練習11：結果を表示する</a></li>
+  </ul></li>
+  <li><a href="#人間による着手" id="toc-人間による着手" class="nav-link" data-scroll-target="#人間による着手"><span class="header-section-number">7.8</span> 人間による着手</a>
+  <ul class="collapse">
+  <li><a href="#練習12人間の入力で石を置く" id="toc-練習12人間の入力で石を置く" class="nav-link" data-scroll-target="#練習12人間の入力で石を置く"><span class="header-section-number">7.8.1</span> 練習12：人間の入力で石を置く</a></li>
+  </ul></li>
+  <li><a href="#人間対人間のゲーム" id="toc-人間対人間のゲーム" class="nav-link" data-scroll-target="#人間対人間のゲーム"><span class="header-section-number">7.9</span> 人間対人間のゲーム</a>
+  <ul class="collapse">
+  <li><a href="#練習13汎用ゲーム関数を定義する" id="toc-練習13汎用ゲーム関数を定義する" class="nav-link" data-scroll-target="#練習13汎用ゲーム関数を定義する"><span class="header-section-number">7.9.1</span> 練習13：汎用ゲーム関数を定義する</a></li>
+  <li><a href="#練習14人間対人間で動作確認する" id="toc-練習14人間対人間で動作確認する" class="nav-link" data-scroll-target="#練習14人間対人間で動作確認する"><span class="header-section-number">7.9.2</span> 練習14：人間対人間で動作確認する</a></li>
+  </ul></li>
+  <li><a href="#まとめ" id="toc-まとめ" class="nav-link" data-scroll-target="#まとめ"><span class="header-section-number">7.10</span> まとめ</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">オセロゲームの基本実装</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>本章では、Pythonでオセロゲームの基本機能を実装する。 ここで作成する関数は、後の章でゲーム木探索、minimax法、αβ法、評価関数の改良にそのまま再利用する。</p>
+<p>各課題は、<code>reversi_yourid.py</code> に順に追加していく。 動作確認用の <code>assert</code> 文がついている練習は、そのまま <code>test_reversi.py</code> にテストとして追加し、<code>pytest</code> で通ることを確認しながら進めること。</p>
+<section id="本章の到達目標" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="本章の到達目標"><span class="header-section-number">7.1</span> 本章の到達目標</h2>
+<ul>
+<li>盤面を表現する。</li>
+<li>手番を交代する。</li>
+<li>盤面を表示する。</li>
+<li>合法手を判定する。</li>
+<li>石を反転する。</li>
+<li>パス、終局、勝敗を判定する。</li>
+<li><strong>人間対人間</strong>のオセロゲームを動かす。</li>
+</ul>
+</section>
+<section id="オセロゲームのルール" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="オセロゲームのルール"><span class="header-section-number">7.2</span> オセロゲームのルール</h2>
+<p>オセロは、<span class="math inline">\(8 \times 8\)</span> の盤上で先手と後手が交互に石を打ち、最終的に石の数の多い方が勝ちとなる二人ゲームである。 本実験では、先手を <code>1</code>、後手を <code>-1</code>、空きを <code>0</code> として盤面を表現する。</p>
+<p>ルールを確認しておく。</p>
+<ol type="1">
+<li>最初に盤の中央に先手・後手の石を2個ずつ交差するように置く。</li>
+<li>相手の石をはさめる場所にだけ自分の石を置ける。</li>
+<li>はさんだ相手の石はすべて自分の石に反転する。</li>
+<li>先手・後手が交互に1石ずつ打つ。</li>
+<li>打てる場所がない場合はパスとなる。</li>
+<li>打てる場所がある場合、自分の意思でパスすることはできない。</li>
+<li>盤面がすべて埋まるか、両者とも打てなくなれば終了する。</li>
+</ol>
+<p>「<strong>はさむ</strong>」とは、自分の打った石と既に盤面にある自分の石が、縦・横・斜めの8方向のいずれかに並び、その間に相手の石が1つ以上連続して存在することをいう。</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>旧 LISP 版の教材では、最初に <span class="math inline">\(4 \times 4\)</span> の盤で動作確認をしてから <span class="math inline">\(8 \times 8\)</span> に拡張する流れを採用していた。 本書では <code>BOARD_SIZE</code> を定数で変更すれば <span class="math inline">\(4 \times 4\)</span> にも切り替えられるようコードを書く。 小さな盤でデバッグすると合法手や反転を目視で確認しやすい。</p>
+</div>
+</div>
+</section>
+<section id="盤面の表現" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="盤面の表現"><span class="header-section-number">7.3</span> 盤面の表現</h2>
+<p>盤面は<strong>リストのリスト</strong>で表す。 外側のリストが行、内側のリストが列である。 Pythonの添字は <code>0</code> から始まるが、画面表示と入力では人間に分かりやすいように <code>1</code> から <code>8</code> の番号を使う。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>board[row][col]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>例えば、<code>board[3][4]</code> は4行5列目を表す。</p>
+<section id="例題定数を定義する" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="例題定数を定義する"><span class="header-section-number">7.3.1</span> 例題：定数を定義する</h3>
+<p>盤面の大きさ、石の値、表示文字、8方向を表す定数を定義する。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>BOARD_SIZE <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>BOARD_SENTE <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>BOARD_GOTE <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>BOARD_EMPTY <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a>BOARD_SENTE_STR <span class="op">=</span> <span class="st">"*"</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>BOARD_GOTE_STR <span class="op">=</span> <span class="st">"o"</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>BOARD_EMPTY_STR <span class="op">=</span> <span class="st">"-"</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a>BOARD_SYMBOL <span class="op">=</span> {</span>
+<span id="cb2-11"><a href="#cb2-11"></a>    BOARD_SENTE: BOARD_SENTE_STR,</span>
+<span id="cb2-12"><a href="#cb2-12"></a>    BOARD_GOTE:  BOARD_GOTE_STR,</span>
+<span id="cb2-13"><a href="#cb2-13"></a>    BOARD_EMPTY: BOARD_EMPTY_STR,</span>
+<span id="cb2-14"><a href="#cb2-14"></a>}</span>
+<span id="cb2-15"><a href="#cb2-15"></a></span>
+<span id="cb2-16"><a href="#cb2-16"></a>BOARD_DIRECTIONS <span class="op">=</span> [</span>
+<span id="cb2-17"><a href="#cb2-17"></a>    (<span class="dv">0</span>,  <span class="dv">1</span>),   <span class="co"># 右</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a>    (<span class="dv">1</span>,  <span class="dv">1</span>),   <span class="co"># 右下</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a>    (<span class="dv">1</span>,  <span class="dv">0</span>),   <span class="co"># 下</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a>    (<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>),   <span class="co"># 左下</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a>    (<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>),   <span class="co"># 左</span></span>
+<span id="cb2-22"><a href="#cb2-22"></a>    (<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>),  <span class="co"># 左上</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a>    (<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>),   <span class="co"># 上</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a>    (<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>),   <span class="co"># 右上</span></span>
+<span id="cb2-25"><a href="#cb2-25"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>本資料では、先手を <code>*</code>、後手を <code>o</code> と表示する。 <code>BOARD_SENTE</code> と <code>BOARD_GOTE</code> は、盤面上の石を表す値であると同時に、<strong>手番</strong>を表す値としても使う。</p>
+</section>
+<section id="練習1初期盤面を作る" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="練習1初期盤面を作る"><span class="header-section-number">7.3.2</span> 練習1：初期盤面を作る</h3>
+<p>初期盤面を返す関数 <code>initial_board()</code> を定義せよ。 戻り値は <span class="math inline">\(8 \times 8\)</span> のリストのリストであり、中央4マスだけに石が置かれているものとする。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">def</span> initial_board():</span>
+<span id="cb3-2"><a href="#cb3-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>動作確認:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>board <span class="op">=</span> initial_board()</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="cf">assert</span> board[<span class="dv">3</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_GOTE</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="cf">assert</span> board[<span class="dv">3</span>][<span class="dv">4</span>] <span class="op">==</span> BOARD_SENTE</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="cf">assert</span> board[<span class="dv">4</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_SENTE</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="cf">assert</span> board[<span class="dv">4</span>][<span class="dv">4</span>] <span class="op">==</span> BOARD_GOTE</span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="cf">assert</span> board[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">==</span> BOARD_EMPTY</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>ヒント
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>リスト内包表記を使うと、<span class="math inline">\(N \times N\)</span> の空盤を簡潔に作れる。 中央4マスだけ後で代入すればよい。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>board <span class="op">=</span> [[BOARD_EMPTY <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(BOARD_SIZE)] <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(BOARD_SIZE)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+</section>
+<section id="手番と表示" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="手番と表示"><span class="header-section-number">7.4</span> 手番と表示</h2>
+<section id="練習2手番を交代する" class="level3" data-number="7.4.1">
+<h3 data-number="7.4.1" class="anchored" data-anchor-id="練習2手番を交代する"><span class="header-section-number">7.4.1</span> 練習2：手番を交代する</h3>
+<p>手番 <code>turn</code> を引数に取り、次の手番を返す関数 <code>change_turn(turn)</code> を定義せよ。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">def</span> change_turn(turn):</span>
+<span id="cb6-2"><a href="#cb6-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>動作確認:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="cf">assert</span> change_turn(BOARD_SENTE) <span class="op">==</span> BOARD_GOTE</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="cf">assert</span> change_turn(BOARD_GOTE) <span class="op">==</span> BOARD_SENTE</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="練習3盤面を表示する" class="level3" data-number="7.4.2">
+<h3 data-number="7.4.2" class="anchored" data-anchor-id="練習3盤面を表示する"><span class="header-section-number">7.4.2</span> 練習3：盤面を表示する</h3>
+<p>盤面 <code>board</code> を受け取り、現在の盤面を表示する関数 <code>print_board(board)</code> を定義せよ。 表示は次の形式に合わせること。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>R/C 1 2 3 4 5 6 7 8</span>
+<span id="cb8-2"><a href="#cb8-2"></a>  1 - - - - - - - -</span>
+<span id="cb8-3"><a href="#cb8-3"></a>  2 - - - - - - - -</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  3 - - - - - - - -</span>
+<span id="cb8-5"><a href="#cb8-5"></a>  4 - - - o * - - -</span>
+<span id="cb8-6"><a href="#cb8-6"></a>  5 - - - * o - - -</span>
+<span id="cb8-7"><a href="#cb8-7"></a>  6 - - - - - - - -</span>
+<span id="cb8-8"><a href="#cb8-8"></a>  7 - - - - - - - -</span>
+<span id="cb8-9"><a href="#cb8-9"></a>  8 - - - - - - - -</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>合わせて、現在の手番を表示する補助関数 <code>print_current_turn(turn)</code> も定義せよ。</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>ヒント
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>1行目は <code>"R/C 1 2 3 4 5 6 7 8"</code> のように固定文字を表示する。 各行の先頭の番号は <code>f"  {row + 1}"</code> のように <code>row + 1</code> を表示する。 石の表示は <code>BOARD_SYMBOL[stone]</code> を使えば1行で書ける。</p>
+</div>
+</div>
+</section>
+</section>
+<section id="盤面の走査" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="盤面の走査"><span class="header-section-number">7.5</span> 盤面の走査</h2>
+<p>合法手を判定するには、石を置いた場所から8方向を調べる必要がある。 ある方向について、次の3通りを区別する。</p>
+<ol type="1">
+<li>自分の石が出る前に<strong>盤面の外</strong>に出た。</li>
+<li>自分の石が出る前に<strong>空きマス</strong>に到達した。</li>
+<li>相手の石を1つ以上はさんだ後、<strong>自分の石</strong>に到達した。</li>
+</ol>
+<p>このうち、相手の石を反転できるのは<strong>3の場合だけ</strong>である。</p>
+<section id="練習41方向に反転できる数を数える" class="level3" data-number="7.5.1">
+<h3 data-number="7.5.1" class="anchored" data-anchor-id="練習41方向に反転できる数を数える"><span class="header-section-number">7.5.1</span> 練習4：1方向に反転できる数を数える</h3>
+<p><code>board</code> の <code>(row0, col0)</code> に <code>turn</code> の石を置くと仮定し、<code>(row_inc, col_inc)</code> 方向に反転できる相手の石の数を返す関数 <code>board_scan(board, row0, col0, row_inc, col_inc, turn)</code> を定義せよ。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">def</span> board_scan(board, row0, col0, row_inc, col_inc, turn):</span>
+<span id="cb9-2"><a href="#cb9-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>動作確認:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>board <span class="op">=</span> initial_board()</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="cf">assert</span> board_scan(board, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>, BOARD_SENTE) <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="cf">assert</span> board_scan(board, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, BOARD_SENTE) <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="cf">assert</span> board_scan(board, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, BOARD_SENTE) <span class="op">==</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>ヒント
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>(row0, col0)</code> そのものは、これから石を置く空きマスである。 したがって、走査は <code>(row0 + row_inc, col0 + col_inc)</code> から始める。 ループの中では「枠外」「空きマス」「自分の石」「相手の石」の4ケースを区別する。 自分の石に到達したらそれまでに数えた相手石の数を返す。 枠外や空きマスに到達したら、はさめなかったので <code>0</code> を返す。</p>
+</div>
+</div>
+</section>
+<section id="練習5合法手を判定する" class="level3" data-number="7.5.2">
+<h3 data-number="7.5.2" class="anchored" data-anchor-id="練習5合法手を判定する"><span class="header-section-number">7.5.2</span> 練習5：合法手を判定する</h3>
+<p>盤面 <code>board</code> の <code>(row, col)</code> に <code>turn</code> の石を置けるかを判定する関数 <code>board_movable(board, row, col, turn)</code> を定義せよ。 そのマスが空きであり、8方向のいずれかで1つ以上反転できれば <code>True</code> を返す。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">def</span> board_movable(board, row, col, turn):</span>
+<span id="cb11-2"><a href="#cb11-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>動作確認:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>board <span class="op">=</span> initial_board()</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="cf">assert</span> board_movable(board, <span class="dv">2</span>, <span class="dv">3</span>, BOARD_SENTE)</span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="cf">assert</span> <span class="kw">not</span> board_movable(board, <span class="dv">2</span>, <span class="dv">3</span>, BOARD_GOTE)</span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="cf">assert</span> <span class="kw">not</span> board_movable(board, <span class="dv">3</span>, <span class="dv">3</span>, BOARD_SENTE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="練習6どこかに打てるかを判定する" class="level3" data-number="7.5.3">
+<h3 data-number="7.5.3" class="anchored" data-anchor-id="練習6どこかに打てるかを判定する"><span class="header-section-number">7.5.3</span> 練習6：どこかに打てるかを判定する</h3>
+<p>手番 <code>turn</code> が盤面上のどこかに石を置けるかどうかを判定する関数 <code>board_movable_any(board, turn)</code> を定義せよ。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">def</span> board_movable_any(board, turn):</span>
+<span id="cb13-2"><a href="#cb13-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>動作確認:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>board <span class="op">=</span> initial_board()</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="cf">assert</span> board_movable_any(board, BOARD_SENTE)</span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="cf">assert</span> board_movable_any(board, BOARD_GOTE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="盤面の更新" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="盤面の更新"><span class="header-section-number">7.6</span> 盤面の更新</h2>
+<section id="練習7石を置き反転する" class="level3" data-number="7.6.1">
+<h3 data-number="7.6.1" class="anchored" data-anchor-id="練習7石を置き反転する"><span class="header-section-number">7.6.1</span> 練習7：石を置き、反転する</h3>
+<p>盤面 <code>board</code> の <code>(row, col)</code> に <code>turn</code> の石を置き、8方向について反転できる石をすべて反転する関数 <code>board_move(board, row, col, turn)</code> を定義せよ。 この関数は<strong>盤面を直接更新してよい</strong>。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">def</span> board_move(board, row, col, turn):</span>
+<span id="cb15-2"><a href="#cb15-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>動作確認:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>board <span class="op">=</span> initial_board()</span>
+<span id="cb16-2"><a href="#cb16-2"></a>board_move(board, <span class="dv">2</span>, <span class="dv">3</span>, BOARD_SENTE)</span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="cf">assert</span> board[<span class="dv">2</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_SENTE</span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="cf">assert</span> board[<span class="dv">3</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_SENTE</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>後の探索でのコピー
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>後の章でゲーム木探索を行う際は、<strong>元の盤面を壊さないようにコピーを作ってから</strong> <code>board_move()</code> を呼ぶ。 盤面はリストのリストなので、<code>new_board = [row[:] for row in board]</code> のように各行をコピーすれば十分である（深いコピーである <code>copy.deepcopy</code> より速い）。</p>
+</div>
+</div>
+</section>
+</section>
+<section id="終局と評価" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="終局と評価"><span class="header-section-number">7.7</span> 終局と評価</h2>
+<section id="練習8石の数を数える" class="level3" data-number="7.7.1">
+<h3 data-number="7.7.1" class="anchored" data-anchor-id="練習8石の数を数える"><span class="header-section-number">7.7.1</span> 練習8：石の数を数える</h3>
+<p>盤面 <code>board</code> にある <code>turn</code> の石の数を数える関数 <code>board_number_check(board, turn)</code> を定義せよ。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> board_number_check(board, turn):</span>
+<span id="cb17-2"><a href="#cb17-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>動作確認:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>board <span class="op">=</span> initial_board()</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="cf">assert</span> board_number_check(board, BOARD_SENTE) <span class="op">==</span> <span class="dv">2</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="cf">assert</span> board_number_check(board, BOARD_GOTE) <span class="op">==</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="練習9盤面の基本評価値を返す" class="level3" data-number="7.7.2">
+<h3 data-number="7.7.2" class="anchored" data-anchor-id="練習9盤面の基本評価値を返す"><span class="header-section-number">7.7.2</span> 練習9：盤面の基本評価値を返す</h3>
+<p>石数に基づく評価関数 <code>board_eval(board)</code> を定義せよ。 評価値は次の式で求める。</p>
+<p><span class="math display">\[
+\frac{\text{先手の石数} - \text{後手の石数}}{\text{先手の石数} + \text{後手の石数}}
+\]</span></p>
+<p>この値は、先手が有利なら正、後手が有利なら負、互角なら <span class="math inline">\(0\)</span> になる。 分母が <span class="math inline">\(0\)</span> になるとき（理論上は起きない）は <code>0.0</code> を返すようにしておく。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">def</span> board_eval(board):</span>
+<span id="cb19-2"><a href="#cb19-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>動作確認:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>board <span class="op">=</span> initial_board()</span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="cf">assert</span> board_eval(board) <span class="op">==</span> <span class="fl">0.0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="練習10盤面の状態を判定する" class="level3" data-number="7.7.3">
+<h3 data-number="7.7.3" class="anchored" data-anchor-id="練習10盤面の状態を判定する"><span class="header-section-number">7.7.3</span> 練習10：盤面の状態を判定する</h3>
+<p>盤面 <code>board</code> と手番 <code>turn</code> を受け取り、現在の状態を返す関数 <code>board_state(board, turn)</code> を定義せよ。 返す値は次の3通りである。</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><code>turn</code> が打てるか</th>
+<th>相手が打てるか</th>
+<th>戻り値</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>はい</td>
+<td>–</td>
+<td><code>None</code></td>
+<td>ゲーム継続中</td>
+</tr>
+<tr class="even">
+<td>いいえ</td>
+<td>はい</td>
+<td><code>"pass"</code></td>
+<td>パス</td>
+</tr>
+<tr class="odd">
+<td>いいえ</td>
+<td>いいえ</td>
+<td><code>board_eval(board)</code></td>
+<td>終局（評価値）</td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">def</span> board_state(board, turn):</span>
+<span id="cb21-2"><a href="#cb21-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>戻り値の型に注意
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>board_state()</code> は <strong><code>None</code>、<code>str</code>（“pass”）、<code>float</code>（評価値）</strong> の3種類の型を返す。 これを受ける側では、<code>isinstance(state, float)</code> で終局を判定する。 評価値が偶然 <code>0.0</code> であっても <code>isinstance(state, float)</code> は <code>True</code> になるので、<code>if state:</code> のような偽値チェックは使わない。</p>
+</div>
+</div>
+</section>
+<section id="練習11結果を表示する" class="level3" data-number="7.7.4">
+<h3 data-number="7.7.4" class="anchored" data-anchor-id="練習11結果を表示する"><span class="header-section-number">7.7.4</span> 練習11：結果を表示する</h3>
+<p>盤面 <code>board</code> と <code>board_state()</code> の終局評価値 <code>state</code> を受け取り、最終盤面、勝者、石数を表示する関数 <code>game_result(board, state)</code> を定義せよ。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a><span class="kw">def</span> game_result(board, state):</span>
+<span id="cb22-2"><a href="#cb22-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>表示例:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb23-1"><a href="#cb23-1"></a>Game Won by Sente *</span>
+<span id="cb23-2"><a href="#cb23-2"></a>Score is 35 - 29</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>state</code> が <code>0</code> のときは <code>Draw</code> と表示する。</p>
+</section>
+</section>
+<section id="人間による着手" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="人間による着手"><span class="header-section-number">7.8</span> 人間による着手</h2>
+<section id="練習12人間の入力で石を置く" class="level3" data-number="7.8.1">
+<h3 data-number="7.8.1" class="anchored" data-anchor-id="練習12人間の入力で石を置く"><span class="header-section-number">7.8.1</span> 練習12：人間の入力で石を置く</h3>
+<p>盤面 <code>board</code>、手番 <code>turn</code>、手数 <code>count</code> を受け取り、人間から行と列を入力させて石を置く関数 <code>play_by_human(board, turn, count)</code> を定義せよ。 入力は <code>4 3</code> のように、行番号と列番号を空白区切りで受け取る。 入力された番号は1から8であり、盤面の添字に使うときは1を引く。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">def</span> play_by_human(board, turn, count):</span>
+<span id="cb24-2"><a href="#cb24-2"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>満たすべき条件は次の通りである。</p>
+<ul>
+<li>合法手がない場合は何も入力させずに戻る（呼び出し側でパス処理を行う）。</li>
+<li>入力が2つの整数でない場合は再入力させる。</li>
+<li>盤面外、または合法手でない場合は再入力させる。</li>
+<li>合法手であれば <code>board_move()</code> で盤面を更新して戻る。</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>ヒント
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>入力文字列を整数2つに変換するには次のようにする。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1"></a>inp <span class="op">=</span> <span class="bu">input</span>(<span class="ss">f"(</span><span class="sc">{</span>count<span class="sc">}</span><span class="ss">) Enter row and col for </span><span class="sc">{</span>BOARD_SYMBOL[turn]<span class="sc">}</span><span class="ss">: "</span>)</span>
+<span id="cb25-2"><a href="#cb25-2"></a>parts <span class="op">=</span> inp.strip().split()</span>
+<span id="cb25-3"><a href="#cb25-3"></a><span class="cf">if</span> <span class="bu">len</span>(parts) <span class="op">!=</span> <span class="dv">2</span>:</span>
+<span id="cb25-4"><a href="#cb25-4"></a>    <span class="cf">continue</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a><span class="cf">try</span>:</span>
+<span id="cb25-6"><a href="#cb25-6"></a>    row <span class="op">=</span> <span class="bu">int</span>(parts[<span class="dv">0</span>]) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb25-7"><a href="#cb25-7"></a>    col <span class="op">=</span> <span class="bu">int</span>(parts[<span class="dv">1</span>]) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb25-8"><a href="#cb25-8"></a><span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb25-9"><a href="#cb25-9"></a>    <span class="cf">continue</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+</section>
+<section id="人間対人間のゲーム" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="人間対人間のゲーム"><span class="header-section-number">7.9</span> 人間対人間のゲーム</h2>
+<section id="練習13汎用ゲーム関数を定義する" class="level3" data-number="7.9.1">
+<h3 data-number="7.9.1" class="anchored" data-anchor-id="練習13汎用ゲーム関数を定義する"><span class="header-section-number">7.9.1</span> 練習13：汎用ゲーム関数を定義する</h3>
+<p>第7章でコンピュータ対コンピュータの実装を行うことを見据えて、ここでは<strong>汎用のゲーム関数</strong>を一つ定義する。 <code>othello(sente_gote, yomi_depth)</code> は次の通りに振る舞う。</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><code>sente_gote</code></th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>BOARD_SENTE</code></td>
+<td>コンピュータが先手、人間が後手</td>
+</tr>
+<tr class="even">
+<td><code>BOARD_GOTE</code></td>
+<td>人間が先手、コンピュータが後手</td>
+</tr>
+<tr class="odd">
+<td><code>BOARD_EMPTY</code></td>
+<td>先手も後手もコンピュータ</td>
+</tr>
+<tr class="even">
+<td>その他（例：<code>None</code>）</td>
+<td>先手も後手も人間（人間対人間）</td>
+</tr>
+</tbody>
+</table>
+<p><code>yomi_depth</code> はコンピュータの先読み深さである。 人間対人間のときは使われない（<code>None</code> でよい）。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">def</span> othello(sente_gote, yomi_depth<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb26-2"><a href="#cb26-2"></a>    board <span class="op">=</span> initial_board()</span>
+<span id="cb26-3"><a href="#cb26-3"></a>    turn <span class="op">=</span> BOARD_SENTE   <span class="co"># 初期手番は常に先手</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a>    count <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>処理の流れは次の通りである。</p>
+<ol type="1">
+<li><code>state = board_state(board, turn)</code> で現在の状態を確認する。</li>
+<li><code>state</code> が <code>float</code> なら終局なので <code>game_result(board, state)</code> を呼んで終了する。</li>
+<li><code>state == "pass"</code> なら、パスのメッセージを表示し、手数を増やさずに手番だけ交代する。</li>
+<li>それ以外なら、盤面を表示し、コンピュータ担当なら <code>play_by_machine(board, turn, count, yomi_depth)</code>、人間担当なら <code>play_by_human(board, turn, count)</code> を呼ぶ。</li>
+<li>手番を交代し、手数を進める。</li>
+</ol>
+<p><code>play_by_machine</code> は次章で実装するので、ここでは未定義のままにし、<code>sente_gote</code> が「コンピュータ担当を含まない値」（例えば <code>None</code>）のときだけ動かせるようにしておく。</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>重要：初期手番は常に先手
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>turn</code> の初期値は <strong><code>BOARD_SENTE</code></strong> である。 <code>sente_gote</code> の値ではない点に注意せよ（<code>sente_gote</code> はコンピュータの担当を表すだけ）。</p>
+</div>
+</div>
+</section>
+<section id="練習14人間対人間で動作確認する" class="level3" data-number="7.9.2">
+<h3 data-number="7.9.2" class="anchored" data-anchor-id="練習14人間対人間で動作確認する"><span class="header-section-number">7.9.2</span> 練習14：人間対人間で動作確認する</h3>
+<p><code>othello(None)</code> を実行し、人間対人間で初期盤面から最後まで実行できることを確認せよ。</p>
+<p>ここまで実装できたら、<code>pytest</code> でテストを通し、Gitでコミットしておくこと。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1"></a><span class="ex">python</span> <span class="at">-m</span> pytest <span class="at">-v</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a><span class="fu">git</span> add reversi_yourid.py test_reversi.py</span>
+<span id="cb27-3"><a href="#cb27-3"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"implement human reversi game (ex.1-14)"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="まとめ" class="level2" data-number="7.10">
+<h2 data-number="7.10" class="anchored" data-anchor-id="まとめ"><span class="header-section-number">7.10</span> まとめ</h2>
+<ul>
+<li>本章では、盤面表現・走査・合法手判定・反転・終局判定・人間入力という、オセロゲームの<strong>ルール部分</strong>を実装した。</li>
+<li>状態判定 <code>board_state()</code> は <strong><code>None</code> / <code>"pass"</code> / <code>float</code></strong> の3通りの値を返す点に注意する。</li>
+<li>汎用ゲーム関数 <code>othello(sente_gote, yomi_depth)</code> の枠組みを用意したので、次章でコンピュータの着手 <code>play_by_machine</code> を実装すれば、人間対コンピュータ・コンピュータ対コンピュータが自動的に動くようになる。</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./game.html" class="pagination-link" aria-label="ゲームと探索">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">ゲームと探索</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./gametree.html" class="pagination-link" aria-label="minimax 法によるゲーム木探索">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">minimax 法によるゲーム木探索</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

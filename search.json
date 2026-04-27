@@ -1,0 +1,1182 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "知能工学実験Ⅱ",
+    "section": "",
+    "text": "1 はじめに\n人工知能の研究は、推論、探索、知識表現、機械学習、深層学習、生成AIへと発展してきた。 近年の生成AIの著しい性能向上は、大規模なデータと計算資源、そして適切なアルゴリズムが組み合わさった結果である。 このような華やかな成果の裏側には、人工知能の基礎的な概念である「状態をどのように表現するか」「限られた計算資源の中でどのように解を探索するか」という古典的な問いがある。 これらは、現在の機械学習やAIエージェントにも共通する考え方であり、人工知能を学ぶ上で避けて通れないテーマである。\n本実験では、Pythonを用いてオセロゲームを段階的に実装することを通して、これらの基礎を体験的に学ぶ。",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#本実験の特徴",
+    "href": "index.html#本実験の特徴",
+    "title": "知能工学実験Ⅱ",
+    "section": "1.1 本実験の特徴",
+    "text": "1.1 本実験の特徴\n旧教材（2025年度まで）ではプログラミング言語としてLISPを用いていた。 LISPは記号処理に特化した古典的な人工知能言語であり、ゲーム木探索や知識表現の研究で長く使われてきた。 しかし、近年の機械学習・深層学習・生成AI研究は、ライブラリと開発エコシステムの豊かさからPythonが事実上の標準言語となっている。 そこで2026年度からは、本実験もPythonによる実装に切り替える。 あわせて、現代のソフトウェア開発で必須となっている\n\nGitによるバージョン管理\npytest を用いた単体テスト\nVSCode + Dev Container による再現可能な開発環境\n\nを実験のフレームワークとして組み込む。",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#学習する内容",
+    "href": "index.html#学習する内容",
+    "title": "知能工学実験Ⅱ",
+    "section": "1.2 学習する内容",
+    "text": "1.2 学習する内容\n\n\n\n\n\n\n\n章\n内容\n\n\n\n\n1\n人工知能の歴史\n\n\n2\n実験環境の構築（VSCode + Dev Container）\n\n\n3\nGitによるバージョン管理\n\n\n4\npytest によるテスト駆動開発の基礎\n\n\n5\nゲーム理論とゲーム木\n\n\n6\nオセロゲームの基本実装\n\n\n7\nminimax法によるゲーム木探索\n\n\n8\nαβ枝刈り\n\n\n9\nヒューリスティック評価関数\n\n\n10\n評価関数の改良と実験\n\n\n11\nメタヒューリスティクスによる評価関数の最適化（山登り法・焼きなまし法・GA）\n\n\n12\n発展：機械学習による評価関数の構築\n\n\n13\n対戦実験とGUI\n\n\n14\n最終課題と評価\n\n\n\nこれらは大きく次の3つの段階に分かれている。\n\n実装の基礎（1〜8章）：環境構築、ルール実装、minimax/αβ までを完成させる。\n評価関数の設計（9〜10章）：人間の知識を評価関数として記述し、手動で改良する。\n自動化の階層（11〜12章）：人間の手を離れて、最適化アルゴリズムや機械学習で評価関数を改良する。\n\n11章と12章は、AI 研究の歴史でいえば「人間の知識を作り込む段階」から「最適化が知識を獲得する段階」、そして「データから学ぶ段階」への移行に対応している。 これは、本書の第1章で振り返る AI の歴史的発展（推論 → 知識ベース → 機械学習）の縮図でもある。",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#完成像",
+    "href": "index.html#完成像",
+    "title": "知能工学実験Ⅱ",
+    "section": "1.3 完成像",
+    "text": "1.3 完成像\n最終的には、reversi_yourid.py1 という1つのPythonファイルとして、\n\n\nWe know from the first fundamental theorem of calculus that for \\(x\\) in \\([a, b]\\):\n\\[\\frac{d}{dx}\\left( \\int_{a}^{x} f(u)\\,du\\right)=f(x).\\]\n\n人間 vs 人間\n人間 vs コンピュータ（minimax / αβ）\nコンピュータ vs コンピュータ\n\nの三通りのオセロゲームを実行できるプログラムを完成させる。 さらに、自分が設計した評価関数の特徴を実験データに基づいて説明できるようになることを目指す。",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#本書の使い方",
+    "href": "index.html#本書の使い方",
+    "title": "知能工学実験Ⅱ",
+    "section": "1.4 本書の使い方",
+    "text": "1.4 本書の使い方\n各章には例題と練習がある。 例題には基準となる実装例が示されているので、まずは写経し、動作を確認してから先に進む。 練習は、その章で学んだ関数を自分の手で実装する課題である。 どの練習にも動作確認用の assert 文がついているので、これが通ることを確認しながら進めること。 こまめに git commit し、テストが通った状態を残すこと。",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#footnotes",
+    "href": "index.html#footnotes",
+    "title": "知能工学実験Ⅱ",
+    "section": "",
+    "text": "yourid は自分のIDに置き換えること。24xxx など。↩︎",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
+    ]
+  },
+  {
+    "objectID": "history.html",
+    "href": "history.html",
+    "title": "2  人工知能の歴史",
+    "section": "",
+    "text": "2.1 人工知能という概念の誕生\n人工知能（Artificial Intelligence: AI）研究の流れを駆け足で振り返ることで、本実験で扱うゲーム木探索や評価関数といった古典的な手法が、AI全体のなかでどのような位置を占めているのかを理解する。",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>人工知能の歴史</span>"
+    ]
+  },
+  {
+    "objectID": "history.html#人工知能という概念の誕生",
+    "href": "history.html#人工知能という概念の誕生",
+    "title": "2  人工知能の歴史",
+    "section": "",
+    "text": "2.1.1 サイバネティクス\n1940年代、Norbert Wiener は『サイバネティクス（Cybernetics: Or Control and Communication in the Animal and the Machine, 1948）』において、生物と機械を共通の枠組みで論じた。 ここではフィードバック制御、情報、通信 を共通の言葉として、神経系や社会、機械システムを統一的に説明することが試みられた。 人工知能という言葉が登場する以前の段階で、「機械が知的にふるまうとはどういうことか」という問いに対する基礎が作られていた。\n\n\n2.1.2 Turing テスト\n1950年、Alan Turing は論文 Computing Machinery and Intelligence で「機械は考えることができるか」という問いを設定した。 答えにくいこの問いを、「ある質問者が、隔てた相手と文字でやりとりするとき、相手が人間か機械か区別できないなら、その機械は知的とみなしてよい」という模倣ゲーム（imitation game） に置き換えた。 これが今日チューリング・テストと呼ばれる思考実験である。 Turing テストは、現代の対話型AIの評価にも引き合いに出されることが多い。\n\n\n2.1.3 ダートマス会議とAIの正式な誕生\n1956年、アメリカ・ダートマス大学で開催されたダートマス会議は、人工知能という概念が正式に誕生した瞬間とされている。 この会議では、John McCarthy、Marvin Minsky、Allen Newell、Herbert Simon などの研究者が集まり、人工知能の研究の方向性や目標を議論した。 ここで McCarthy が「Artificial Intelligence」という用語を提唱し、これ以降この語が学術用語として定着した。 McCarthy は同時期にプログラミング言語LISPを設計しており、その後数十年にわたって人工知能研究の主要言語となった。",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>人工知能の歴史</span>"
+    ]
+  },
+  {
+    "objectID": "history.html#第一次aiブーム推論と探索",
+    "href": "history.html#第一次aiブーム推論と探索",
+    "title": "2  人工知能の歴史",
+    "section": "2.2 第一次AIブーム：推論と探索",
+    "text": "2.2 第一次AIブーム：推論と探索\n「知能とは論理的に物事を判断できることである」という見方のもと、推論（reasoning）と探索（search） によってさまざまな問題を解こうとする研究が盛んに行われた。 迷路、パズル、定理証明、チェスや将棋などのゲームが題材となった。 本実験で扱うゲーム木探索、minimax法、αβ枝刈り はまさにこの時期に体系化された手法であり、現代でもゲームAIや経路計画の基礎となっている。\nただし、現実世界の問題は探索空間が膨大であり、また「常識」のような明文化されていない知識が必要になることも多い。 これにより、第一次AIブームは1970年代に停滞期（AIの冬）を迎えた。",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>人工知能の歴史</span>"
+    ]
+  },
+  {
+    "objectID": "history.html#第二次aiブーム知識表現とエキスパートシステム",
+    "href": "history.html#第二次aiブーム知識表現とエキスパートシステム",
+    "title": "2  人工知能の歴史",
+    "section": "2.3 第二次AIブーム：知識表現とエキスパートシステム",
+    "text": "2.3 第二次AIブーム：知識表現とエキスパートシステム\n第一次ブームの停滞は、知能は知識なしには成り立たない という認識をもたらした。 そこで知識を計算機に明示的に蓄え、推論で利用するエキスパートシステムが研究の中心となった。 医療診断（MYCIN）や化学解析（DENDRAL）、設定支援（XCON）などの実用例も登場した。\nしかし、知識を人手で作り込むコストの高さ、知識の保守の難しさ、例外への対応の弱さといった限界が明らかになり、再び停滞期を迎える。",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>人工知能の歴史</span>"
+    ]
+  },
+  {
+    "objectID": "history.html#第三次aiブーム機械学習とニューラルネットワーク",
+    "href": "history.html#第三次aiブーム機械学習とニューラルネットワーク",
+    "title": "2  人工知能の歴史",
+    "section": "2.4 第三次AIブーム：機械学習とニューラルネットワーク",
+    "text": "2.4 第三次AIブーム：機械学習とニューラルネットワーク\n1990年代以降、ハードウェアの性能向上に伴い大規模なデータセットの利用が現実的になった。 同時に、自由度の高いニューラルネットワークの計算に必要な処理速度が向上し、機械学習の研究が再び盛んになった。\n決定的な転機は2012年の ImageNet コンペティションである。 G. Hinton らのグループがAlexNet という畳み込みニューラルネットワークを用いて、従来の画像認識手法を大幅に上回る性能を達成した。 これを契機に深層学習（Deep Learning） が爆発的に普及し、画像認識、音声認識、自然言語処理、強化学習などの広い分野で応用されるようになった。\nオセロやチェス、囲碁の世界でも、2016年の AlphaGo が深層学習と探索を組み合わせることでトップ棋士に勝利し、ゲームAI研究の新たな段階を切り開いた。",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>人工知能の歴史</span>"
+    ]
+  },
+  {
+    "objectID": "history.html#現在基盤モデルと生成ai",
+    "href": "history.html#現在基盤モデルと生成ai",
+    "title": "2  人工知能の歴史",
+    "section": "2.5 現在：基盤モデルと生成AI",
+    "text": "2.5 現在：基盤モデルと生成AI\n2020年代に入り、Transformer に基づく大規模言語モデル（Large Language Models, LLM）が登場した。 ChatGPTに代表される対話型AIは、文章生成、要約、コード生成、検索など多岐にわたる用途で日常的に利用されるようになっている。 これらの基盤モデルは、機械学習・深層学習の延長線上にあるが、極めて大規模なモデルとデータを活用することで質的に新しい振る舞いを示している。",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>人工知能の歴史</span>"
+    ]
+  },
+  {
+    "objectID": "history.html#本実験の位置づけ",
+    "href": "history.html#本実験の位置づけ",
+    "title": "2  人工知能の歴史",
+    "section": "2.6 本実験の位置づけ",
+    "text": "2.6 本実験の位置づけ\nこのように、AI研究は「論理的な推論と探索」から「知識表現」、そして「データ駆動の学習」へと重心が移ってきた。 しかし、現代のゲームAIや強化学習エージェントの内部でも、ゲーム木探索や評価関数の考え方は依然として重要な部品 として使われている。 本実験で扱う minimax 法、αβ枝刈り、評価関数の設計は、AIの古典的な基礎であると同時に、現代AIにつながる「状態と探索」の感覚を養うための練習である。",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>人工知能の歴史</span>"
+    ]
+  },
+  {
+    "objectID": "setup.html",
+    "href": "setup.html",
+    "title": "3  環境構築と準備",
+    "section": "",
+    "text": "3.1 Visual Studio Code\n本実験で用いるのは、これまでの講義・演習でも扱ってきたPythonである。 ただしオンラインサービスである Google Colaboratory ではなく、ローカル環境にPythonをインストールして実験を行う。 2026年度は、知能工学実験室に備え付けられているデスクトップPCを用いて実験を進める。\n本学では BYOD（Bring Your Own Device）を推進しており、学生は個人のノートPCを持ち学習を進めている。 しかし学生ごとにOSや環境が異なるため、本実験のように環境依存性の強い実験では、共通化が必要になる。 そこで、統一された環境を提供するためVSCode + Dev Containers + Docker による仮想環境を導入する。\n手順の概要は次の通りである。\nVisual Studio Code（VSCode）はMicrosoftが提供する無料のコードエディタである。 本実験では Python の編集、実行、デバッグ、テスト、Git 操作を VSCode 上で完結させる。",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>環境構築と準備</span>"
+    ]
+  },
+  {
+    "objectID": "setup.html#visual-studio-code",
+    "href": "setup.html#visual-studio-code",
+    "title": "3  環境構築と準備",
+    "section": "",
+    "text": "3.1.1 VSCode のインストール\n次のURLからインストーラを取得する。\n\nVisual Studio Code\n\n既にインストールされているものはそのまま使ってもよいが、最新版を利用すること。\n\n\n3.1.2 Dev Containers のインストール\nVSCode の拡張機能 Dev Containers をインストールする。 これは VSCode から Docker コンテナを起動して、コンテナ内でコードを編集・実行できるようにする拡張機能である。\n\n\n3.1.3 Python 拡張機能のインストール\n合わせて、VSCode の拡張機能 Python をインストールしておく。 コード補完、デバッガ、テストランナーなどがすぐに使えるようになる。",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>環境構築と準備</span>"
+    ]
+  },
+  {
+    "objectID": "setup.html#docker",
+    "href": "setup.html#docker",
+    "title": "3  環境構築と準備",
+    "section": "3.2 Docker",
+    "text": "3.2 Docker\nDocker はコンテナ型の仮想化ソフトウェアであり、OSの違いを吸収して同一の環境を提供することができる。 VSCode の Dev Containers は Docker コンテナを起動するための拡張機能であり、Docker 自体は別途インストールする必要がある。\n\n3.2.1 Docker のインストール\n次のURLからインストーラを取得する。\n\nDocker\n\nインストールが済んだら Docker を起動し、ターミナルで次のコマンドを実行してインストールを確認する。\ndocker --version\n\n\n3.2.2 Dockerイメージの取得\n最後の準備として、本実験用に準備した開発コンテナ設定を取得する。 UNIPA から lab_env.zip をダウンロードして、適当な場所に展開する。 展開すると次のような構成になっている。\nlab_env/\n├── .devcontainer/\n│   ├── devcontainer.json\n│   └── Dockerfile\n├── reversi_yourid.py     # 各自のプログラム\n├── test_reversi.py       # テストファイル\n└── pyproject.toml\ndevcontainer.json には Python のバージョン、必要な拡張機能、必要なパッケージ（pytest, pygame など）が指定されている。 Dockerfile は Python ベースのイメージに対し、本実験で使うパッケージを上書きインストールする。 これらのファイルは原則編集しないこと。",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>環境構築と準備</span>"
+    ]
+  },
+  {
+    "objectID": "setup.html#vscode-から-docker-コンテナを起動する",
+    "href": "setup.html#vscode-から-docker-コンテナを起動する",
+    "title": "3  環境構築と準備",
+    "section": "3.3 VSCode から Docker コンテナを起動する",
+    "text": "3.3 VSCode から Docker コンテナを起動する\nVSCode を起動し、lab_env フォルダを開く。 左下の緑色のアイコンをクリックし、「コンテナーで再度開く（Reopen in Container）」 を選択する。 これにより Docker コンテナが起動し、VSCode がコンテナ内で再起動される。\n\n\n\n\n\n\nWarning\n\n\n\n最初の起動はイメージのビルドが行われるため非常に時間がかかる。 授業時間のロスを避けるため、次回以降の実験では授業前にあらかじめ起動しておくこと。\n\n\nコンテナ内で VSCode が起動したら、ターミナルを開いて、次のコマンドで Python の実行環境が構築されていることを確認する。\npython --version\npip list | grep -E \"pytest|pygame\"\nPython 3.x.x と表示され、pytest と pygame がインストールされていれば成功である。",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>環境構築と準備</span>"
+    ]
+  },
+  {
+    "objectID": "setup.html#まとめ",
+    "href": "setup.html#まとめ",
+    "title": "3  環境構築と準備",
+    "section": "3.4 まとめ",
+    "text": "3.4 まとめ\n\n本実験では VSCode + Dev Containers + Docker により、統一された Python 実行環境を用いる。\n配布される lab_env.zip には Dev Container 設定が含まれており、VSCode で開いて「コンテナーで再度開く」を選ぶだけで環境が立ち上がる。\n初回のビルドは時間がかかるため、事前に起動しておくこと。",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>環境構築と準備</span>"
+    ]
+  },
+  {
+    "objectID": "git.html",
+    "href": "git.html",
+    "title": "4  Gitによるバージョン管理",
+    "section": "",
+    "text": "4.1 バージョン管理とは\nオセロゲームの実装を円滑に進めるため、二つのソフトウェア工学的な技術を習得する。 ひとつは本章で扱うGitによるバージョン管理、もうひとつは次章で扱うpytestによる単体テストである。 これらは、現代のソフトウェア開発では当たり前に使われている技術であり、人工知能のプログラミングを行う上でも避けては通れない。\nなお本章は、慶應義塾大学の渡辺宙志先生のGitHub演習(渡辺宙志 2020)と、とほほのGit記事を参考にしている。 ここでは本実験で必要な最低限の機能だけを扱うので、より進んだ機能を学びたい人はこれらの資料を参照してほしい。\nプログラムに限らず、実験や研究は、これまでの学習や進捗を踏まえて次のステップに進んでいく営みである。 そのためにノートに記録をとり、何を行ったのか、何ができて何ができなかったのかを書き留めることが、効率的にプログラムや実験、研究を進めていく上で重要になる。\nプログラミングは、目的の機能を実装するためにコードを書く作業である。 すべての機能を一度に実装することはできないので、骨格となるコードを書き上げ、さまざまな機能を一つずつ組み上げていく。 しかし、追加した機能が他のコードと相性が悪く全体としてバグが入る、ということは珍しくない。\nこのような問題に備え、うまく動いている状態でコードを保存しておき、新しく加えた機能で問題が起きたら元に戻れるようにする のが、バージョン管理の基本的な考え方である。 途中経過を逐次記録することで、問題への対処能力が大きく向上する。\n最も素朴なバージョン管理は、ファイルをコピーして名前を変える方法である。 しかし、ファイル数が増えると管理が困難になり、どのコピーがどの状態なのか分からなくなる。 そこで本実験では、現在広く普及しているバージョン管理システムGitを用いる。",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Gitによるバージョン管理</span>"
+    ]
+  },
+  {
+    "objectID": "git.html#バージョン管理とは",
+    "href": "git.html#バージョン管理とは",
+    "title": "4  Gitによるバージョン管理",
+    "section": "",
+    "text": "Note補足：分散型と集中型\n\n\n\nGit は分散型バージョン管理システムであり、サーバが無くてもローカルで履歴を管理できる。 これに対し、CVS や Subversion は集中型で、サーバ上の履歴に対して全員が読み書きする。 分散型は障害に強く、ブランチ操作が軽量という利点がある。",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Gitによるバージョン管理</span>"
+    ]
+  },
+  {
+    "objectID": "git.html#git-の準備",
+    "href": "git.html#git-の準備",
+    "title": "4  Gitによるバージョン管理",
+    "section": "4.2 Git の準備",
+    "text": "4.2 Git の準備\n\n4.2.1 Git のインストール\nDev Container 内ではすでに Git がインストールされている。 バージョンを確認しよう。\ngit --version\n\n\n4.2.2 Git の初期設定\nコミットの作者として記録される名前とメールアドレスを設定する。 個人のGitHubアカウントがある場合は、それと一致させると後で便利である。\ngit config --global user.name \"Your Name\"\ngit config --global user.email \"your.email@example.com\"\n設定内容は次のコマンドで確認できる。\ngit config --global --list",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Gitによるバージョン管理</span>"
+    ]
+  },
+  {
+    "objectID": "git.html#git-の基本概念",
+    "href": "git.html#git-の基本概念",
+    "title": "4  Gitによるバージョン管理",
+    "section": "4.3 Git の基本概念",
+    "text": "4.3 Git の基本概念\nGit では次の三つの場所を意識する。\n\nワーキングツリー（working tree）：ファイルの実体。普段編集している場所。\nインデックス（index, staging area）：次のコミットに含めるファイルの仮置き場。\nリポジトリ（repository）：履歴が保存される場所。.git/ ディレクトリの中。\n\nファイルを編集してから履歴に残すまでの流れは次の通りである。\n編集 → git add（インデックスに登録） → git commit（履歴に保存）\n最初は混乱するが、実際に使いながら身につけていけばよい。 自転車と同じで、理論を読むよりも繰り返し使ってみることが上達の近道である。",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Gitによるバージョン管理</span>"
+    ]
+  },
+  {
+    "objectID": "git.html#git-の基本コマンド",
+    "href": "git.html#git-の基本コマンド",
+    "title": "4  Gitによるバージョン管理",
+    "section": "4.4 Git の基本コマンド",
+    "text": "4.4 Git の基本コマンド\n以下では、reversi_yourid.py を編集していくシナリオを使って Git の基本を確認する。\n\n4.4.1 git init：リポジトリを作る\n新しくバージョン管理を始めるディレクトリで実行する。\ncd lab_env\ngit init\n.git という隠しディレクトリが作られ、ここに履歴が保存される。 配布される lab_env.zip にはすでに .git が含まれているので、改めて init する必要は無い。\n\n\n4.4.2 git status：状態を確認する\ngit status\nワーキングツリーとインデックスの状態が表示される。 迷ったら、まずこれを実行する習慣をつけるとよい。\n\n\n4.4.3 git add：インデックスに登録する\nファイルを次のコミットに含めるために登録する。\ngit add reversi_yourid.py\n複数ファイルをまとめて追加する場合は次のようにする。\ngit add reversi_yourid.py test_reversi.py\n\n\n4.4.4 git commit：履歴に保存する\nインデックスの内容を、メッセージ付きで履歴に保存する。\ngit commit -m \"implement initial board\"\nメッセージは「何をしたかが分かる短い英文または日本語」で書く。 よくある書き方は次のように動詞から始める形である。\n\nimplement initial board\nadd board_movable function\nfix off-by-one in board_scan\n\n\n\n4.4.5 git log：履歴を見る\ngit log\ngit log --oneline           # 1行ずつ表示\ngit log --oneline --graph   # 分岐をグラフ表示\n\n\n4.4.6 git diff：変更を確認する\n何を変えたのか、コミット前に確認する。\ngit diff               # ワーキングツリーとインデックスの差分\ngit diff --cached      # インデックスと最新コミットの差分\ngit diff HEAD          # ワーキングツリーと最新コミットの差分\n\n\n4.4.7 git checkout / git restore：変更を取り消す\n直前のコミット時点に戻したい場合は、\ngit restore reversi_yourid.py\nを使う。古い git checkout -- reversi_yourid.py でも同じことができる。\n\n\n\n\n\n\nWarning\n\n\n\ngit restore は 編集中の変更を捨てる コマンドである。 コミットしていない変更は失われるので注意する。",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Gitによるバージョン管理</span>"
+    ]
+  },
+  {
+    "objectID": "git.html#練習実際に-commit-してみる",
+    "href": "git.html#練習実際に-commit-してみる",
+    "title": "4  Gitによるバージョン管理",
+    "section": "4.5 練習：実際に commit してみる",
+    "text": "4.5 練習：実際に commit してみる\nここまで読んだら、実際に手を動かして確認しよう。\n\n4.5.1 練習G1：初回コミットを作る\nlab_env ディレクトリで以下を実行し、初期状態をコミットせよ。\ngit status\ngit add reversi_yourid.py\ngit status\ngit commit -m \"initial commit\"\ngit log --oneline\n\n\n4.5.2 練習G2：変更を加えて差分を確認する\nreversi_yourid.py の先頭にコメント行を1つ追加し、次を順に実行せよ。\ngit diff\ngit add reversi_yourid.py\ngit diff               # 何も表示されない\ngit diff --cached      # 差分が表示される\ngit commit -m \"add header comment\"\n\n\n4.5.3 練習G3：間違いを取り消す\nreversi_yourid.py を間違って消してしまった、という想定で次を試せ。\necho \"broken\" &gt; reversi_yourid.py   # 中身を破壊\ngit status                          # 変更が検出される\ngit restore reversi_yourid.py       # 直前のコミットに戻す",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Gitによるバージョン管理</span>"
+    ]
+  },
+  {
+    "objectID": "git.html#推奨されるコミットの粒度",
+    "href": "git.html#推奨されるコミットの粒度",
+    "title": "4  Gitによるバージョン管理",
+    "section": "4.6 推奨されるコミットの粒度",
+    "text": "4.6 推奨されるコミットの粒度\n本実験では、各章の練習が終わるたびに git commit することを推奨する。 これにより、後でうまくいかなくなったときに、最後にうまく動いた状態に戻すことができる。\n例えば、本書の第6章の練習13までを実装し終えたら、\ngit add reversi_yourid.py\ngit commit -m \"implement human reversi game (ex.13)\"\nのようにコミットする。 最終レポートでは、git log の内容そのものが開発履歴として評価対象になるので、こまめにコミットを残すこと。",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Gitによるバージョン管理</span>"
+    ]
+  },
+  {
+    "objectID": "git.html#まとめ",
+    "href": "git.html#まとめ",
+    "title": "4  Gitによるバージョン管理",
+    "section": "4.7 まとめ",
+    "text": "4.7 まとめ\n\nGit は分散型バージョン管理システムであり、本実験では init / add / commit / status / log / diff / restore を中心に使う。\n各章の練習が終わるごとに commit する習慣をつける。\n後の章ではテストと組み合わせて、テストが通るようになったらコミットする、という流れで進めていく。\n\n\n\n\n\n渡辺宙志. 2020. GitHub演習. https://github.com/kaityo256/github.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Gitによるバージョン管理</span>"
+    ]
+  },
+  {
+    "objectID": "testdev.html",
+    "href": "testdev.html",
+    "title": "5  pytest によるテスト駆動",
+    "section": "",
+    "text": "5.1 pytest のインストールと実行\nシステム開発では、部品として作る関数が意図した通りに動いていることが保障されていないと、組み上げたときに予期しない動作をする。 バグが発生してから手で動作確認をするのは手間がかかり、何度も繰り返し確認することはさらに大変である。 そこで、関数ごとに期待する入力と出力の組を書き、それを自動で検証するテストを用意する。 これを単体テスト（unit test） と呼ぶ。\nソフトウェア工学では、テストはおおまかに次の四段階に分類される。 本実験では、コード作成と直結する単体テストに集中する。\n本実験の Dev Container には、Python の標準的なテストフレームワークである pytest が予めインストールされている。 インストールされていない場合は、次のコマンドで導入できる。",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
+    ]
+  },
+  {
+    "objectID": "testdev.html#pytest-のインストールと実行",
+    "href": "testdev.html#pytest-のインストールと実行",
+    "title": "5  pytest によるテスト駆動",
+    "section": "",
+    "text": "pip install pytest",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
+    ]
+  },
+  {
+    "objectID": "testdev.html#はじめてのテストassert-文",
+    "href": "testdev.html#はじめてのテストassert-文",
+    "title": "5  pytest によるテスト駆動",
+    "section": "5.2 はじめてのテスト：assert 文",
+    "text": "5.2 はじめてのテスト：assert 文\nPython には assert 条件 という構文があり、条件が偽のときに AssertionError を発生させる。 これだけでも簡単なテストになる。\ndef square(x):\n    return x * x\n\nassert square(2) == 4\nassert square(-3) == 9\nスクリプトとして実行し、何も表示されなければテストは通っている。",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
+    ]
+  },
+  {
+    "objectID": "testdev.html#pytest-形式のテスト",
+    "href": "testdev.html#pytest-形式のテスト",
+    "title": "5  pytest によるテスト駆動",
+    "section": "5.3 pytest 形式のテスト",
+    "text": "5.3 pytest 形式のテスト\npytest では次のルールでテストを書く。\n\nファイル名は test_*.py または *_test.py\nテスト関数の名前は test_ で始める\n関数内で assert を使う\n\n例として、test_square.py を作って次のように書く。\n# test_square.py\nfrom mymath import square\n\n\ndef test_square_positive():\n    assert square(2) == 4\n\n\ndef test_square_negative():\n    assert square(-3) == 9\n\n\ndef test_square_zero():\n    assert square(0) == 0\nターミナルで次のように実行する。\npython -m pytest\nすべてのテストが通れば次のような表示になる。\n=========== 3 passed in 0.01s ===========\n-v オプションをつけると、テスト関数ごとに結果が表示される。\npython -m pytest -v",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
+    ]
+  },
+  {
+    "objectID": "testdev.html#失敗するテストの読み方",
+    "href": "testdev.html#失敗するテストの読み方",
+    "title": "5  pytest によるテスト駆動",
+    "section": "5.4 失敗するテストの読み方",
+    "text": "5.4 失敗するテストの読み方\nsquare 関数を return x + x と間違えて書いてしまった場合、テストは失敗する。\nFAILED test_square.py::test_square_positive - assert 4 == 4\n実際の出力には、どの行で失敗したか、左辺と右辺がどのような値だったかが表示される。 この出力を見ながら、コードのどこが間違っているかを推測してデバッグする。",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
+    ]
+  },
+  {
+    "objectID": "testdev.html#オセロのテスト例先取り",
+    "href": "testdev.html#オセロのテスト例先取り",
+    "title": "5  pytest によるテスト駆動",
+    "section": "5.5 オセロのテスト例（先取り）",
+    "text": "5.5 オセロのテスト例（先取り）\n第6章で実装する initial_board() などの関数に対しては、次のようにテストを書く。 本書の各練習問題には動作確認用の assert 文がついているので、そのまま test_* 関数の中身に貼り付けてテストにできる。\n# test_reversi.py\nfrom reversi_yourid import (\n    BOARD_SENTE, BOARD_GOTE, BOARD_EMPTY, BOARD_SIZE,\n    initial_board, change_turn,\n    board_movable, board_movable_any, board_move,\n    board_number_check,\n)\n\n\ndef test_initial_board():\n    board = initial_board()\n    assert board[3][3] == BOARD_GOTE\n    assert board[3][4] == BOARD_SENTE\n    assert board[4][3] == BOARD_SENTE\n    assert board[4][4] == BOARD_GOTE\n    assert board[0][0] == BOARD_EMPTY\n\n\ndef test_change_turn():\n    assert change_turn(BOARD_SENTE) == BOARD_GOTE\n    assert change_turn(BOARD_GOTE) == BOARD_SENTE\n\n\ndef test_initial_legal_moves():\n    board = initial_board()\n    moves = [\n        (row, col)\n        for row in range(BOARD_SIZE)\n        for col in range(BOARD_SIZE)\n        if board_movable(board, row, col, BOARD_SENTE)\n    ]\n    assert len(moves) == 4\n\n\ndef test_move_flips_stone():\n    board = initial_board()\n    board_move(board, 2, 3, BOARD_SENTE)\n    assert board[2][3] == BOARD_SENTE\n    assert board[3][3] == BOARD_SENTE",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
+    ]
+  },
+  {
+    "objectID": "testdev.html#開発の流れ",
+    "href": "testdev.html#開発の流れ",
+    "title": "5  pytest によるテスト駆動",
+    "section": "5.6 開発の流れ",
+    "text": "5.6 開発の流れ\n本実験では、次の流れで開発を進めることを推奨する。\n\n練習問題の関数のシグネチャだけ決めて、本体は pass で書く。\nその関数の動作確認用 assert を test_reversi.py に追加し、pytest で失敗することを確認する（Red）。\n関数本体を実装し、pytest で通ることを確認する（Green）。\nコードを整理する（変数名、ループの書き方など）。テストが引き続き通ることを確認する（Refactor）。\ngit add して git commit する。\n\nこれを Red-Green-Refactor サイクル と呼ぶ。 最初は冗長に感じるかもしれないが、慣れると「テストが通った」という確証を持って前に進めるようになる。",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
+    ]
+  },
+  {
+    "objectID": "testdev.html#まとめ",
+    "href": "testdev.html#まとめ",
+    "title": "5  pytest によるテスト駆動",
+    "section": "5.7 まとめ",
+    "text": "5.7 まとめ\n\n単体テストはコードの安心材料であり、後から壊してしまったときに気付くための仕組みでもある。\npytest は test_ で始まる関数の中で assert するだけで使える。\n本書の練習問題には動作確認用の assert がついているので、そのままテストに転用できる。\n各練習が終わるごとに、pytest でテストが通ることを確認してから git commit する。",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
+    ]
+  },
+  {
+    "objectID": "game.html",
+    "href": "game.html",
+    "title": "6  ゲームと探索",
+    "section": "",
+    "text": "6.1 ゲームとは\nゲーム（Game） という言葉は、複数のプレイヤーがルールに従って行う競技や遊びを指すことが多いが、一人で行うゲームも含まれる。 将棋、チェス、麻雀などのボードゲーム・カードゲームから、スポーツまでが「ゲーム」に含まれる。 オリンピックが Olympic Games と呼ばれることからも分かるように、ゲームの範疇は非常に広い。 オリンピック競技には個人記録を求める種目もあるが、どこまで頑張るか、頑張らないかは他競技者との駆け引きであり、広く「ゲーム」とみなせる。\nこのようなゲームの抽象的な要素をモデル化したのがゲーム理論（Game Theory） である。 ゲーム理論は、フォン・ノイマンとモルゲンシュテルンによって1944年に発表された『ゲームの理論と経済行動（Theory of Games and Economic Behavior）』で初めて体系化された。 遊びとしてのゲームというよりは、経済学・社会学などの分野での人間の行動を分析するための理論である。 今日ではネットワーク科学とも結びつき、社会現象や経済予測などの分析にも用いられている。\n以下では、このゲーム理論に応じた定義に基づき、概要を説明する。",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ゲームと探索</span>"
+    ]
+  },
+  {
+    "objectID": "game.html#ゲームの分類",
+    "href": "game.html#ゲームの分類",
+    "title": "6  ゲームと探索",
+    "section": "6.2 ゲームの分類",
+    "text": "6.2 ゲームの分類\nゲームを整理し解法を導くには、対象を分類する必要がある。 分類の代表的なものさしを以下に示す。\n\nプレイヤーの人数：将棋などは二人、麻雀は四人。人数が増えるほど複雑になる。\n情報の完全性：将棋などは盤面や持ち駒などの状態が全て把握できる。一方ポーカーでは相手の手札が見えない。情報が欠落するほどアルゴリズムは非決定的になる。\n状態の有限性：状態の多様性が有限かどうか。状態数が多いほど処理量も大きい。\nコスト総和の一定性：プレイヤーの利害が互いに相反するかどうか。協力で利得が増やせるものを非零和ゲーム、誰かの損が必ず別の誰かの得になるものを零和ゲームと呼ぶ。\n\n本実験で扱うオセロゲームは、上記の分類によると 二人完全情報有限零和ゲーム である。",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ゲームと探索</span>"
+    ]
+  },
+  {
+    "objectID": "game.html#ゲームの解析",
+    "href": "game.html#ゲームの解析",
+    "title": "6  ゲームと探索",
+    "section": "6.3 ゲームの解析",
+    "text": "6.3 ゲームの解析\nゲームの本質を解明するには、次の二点が分かればよい。\n\nプレイヤーはどう行動すべきか？（ゲームのアルゴリズム）\nゲームの最終結果はどうあるべきか？（最終目標）\n\nすなわち、各局面で最もふさわしい一手を選び、それを繰り返して最終的に勝利へと導くことが望まれる。\nここで問題となるのが、最終目標である局面の状態と、中間の局面の状態とのギャップである。 ある程度の大きさのゲームでは、状態数は計算機のメモリに乗らないほど膨大になる。 たとえばオセロの状態数は \\(10^{28}\\) という報告があり、終局までの全状態を計算したり保存したりするのは現実的ではない。 結局、ある局面で次の手を決めるとき、最終的にどのような終局になるかが分からないまま判断しなければならない。\nこのような状況で人間（および計算機）が取る戦略は、有限の数手だけ先を読み、その範囲内で最良の手を選ぶ ことである。 最良の手を選ぶには、そのゲームに応じた評価関数が必要であり、ヒューリスティックなアルゴリズム（ゲームの世界では定跡と呼ばれる）を導入することも有効である。\n以下では、二人完全情報有限零和ゲームに対する一般的な手法を説明する。",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ゲームと探索</span>"
+    ]
+  },
+  {
+    "objectID": "game.html#状態の表現と探索木",
+    "href": "game.html#状態の表現と探索木",
+    "title": "6  ゲームと探索",
+    "section": "6.4 状態の表現と探索木",
+    "text": "6.4 状態の表現と探索木\nオセロは二人が交互に手を打ち合うゲームである。 先手の最初の打ち手を第1手とすると、後手が第2手、また先手が第3手……というふうに、手数の偶奇でどちらが打つかが決まる。\nある手を打った直後の状態を頂点とし、次に打てる手を枝として展開していくと、ゲームの状態遷移を表す木が出来上がる（図 Figure 6.1）。\n\n\n\n\n\n\nFigure 6.1: ゲーム木の一例\n\n\n\nゲームを計算機で解く場合、このようなゲーム木を作り、その上で最適な解を探索する。 厳密にはゲーム状態は木ではなくグラフになるが、これは、循環劫や千日手をルールで排除したり、同じ状態を別の頂点で扱うことで木として表現できる。\nゲームの進行は、ゲーム木の根（root）から葉（leaf）へ向かう状態遷移として表せる。 オセロで自分が勝利するには、葉の状態で自分の石数を相手より多くすることが目標になる。 すなわち、最終局面に到達する可能性の高い手を採用することが要求される。\nなお、現在の手から葉まで辿って自分が勝つことが確定できることを「必勝法が存在する」という。 たとえばコネクトフォー（先手必勝）、五目並べ（先手必勝）、6×6 オセロ（後手必勝）などが知られている。\n次に、ゲーム木を使って次の一手を決定する一般的手法を説明する。",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ゲームと探索</span>"
+    ]
+  },
+  {
+    "objectID": "game.html#minimax-法",
+    "href": "game.html#minimax-法",
+    "title": "6  ゲームと探索",
+    "section": "6.5 minimax 法",
+    "text": "6.5 minimax 法\nこの種のゲームは、自分と相手の成績争いである。 自分が不利な手を打つと、自動的に相手が有利になる。 よって、相手はできるだけ相手に有利な手を打つし、自分はできるだけ自分に有利な手を打つはずである。\nこれらをまとめると、\n\n自分の番では最大利得の手を選ぶ（max）\n相手の番では自分にとって最小利得の手を選ぶ（min）\n\nを交互に繰り返すことになる（図 Figure 6.2）。\nこれがミニマックス法（minimax） であり、先手・後手の双方が互いに最善を尽くすと仮定したうえで、自分にとって最も有利になるように手を選ぶ戦略である。\n\n\n\n\n\n\nFigure 6.2: ミニマックス法\n\n\n\n具体的には次のように評価する。 ゲーム木の葉では勝敗が決まっているので、\n\n先手が勝つ葉に \\(1\\)\n後手が勝つ葉に \\(-1\\)\n引き分けの葉に \\(0\\)\n\nを与える。 それ以外の頂点（葉に至る前）は、\n\n先手番なら子の値の最大を採用\n後手番なら子の値の最小を採用\n\nと再帰的に計算する。 最終的に根（root）に \\(1\\) がつけば先手必勝、\\(-1\\) がつけば後手必勝、\\(0\\) なら引き分けとなる。\nこのミニマックス法を計算機で実現するには、木全体を後順走査（post-order） しながら各頂点の評価値を決めればよい。 後順走査の擬似コードを示す。\ndef post_order(n, level):\n    \"\"\"後順走査の枠組み（擬似コード）\"\"\"\n    if n に子供が存在する:\n        n の子供を n_1, n_2, ..., n_k とする\n        for i in range(1, k + 1):\n            post_order(n_i, level + 1)\n    else:\n        n に対する処理を行う\nこれを minimax に拡張すると次のようになる。\ndef minimax(node, turn, depth):\n    \"\"\"minimax 法（擬似コード）\"\"\"\n    if node の状態 == 先手が勝ち:\n        return 1\n    elif node の状態 == 後手が勝ち:\n        return -1\n    elif node の状態 == 引き分け:\n        return 0\n\n    if depth == 0:\n        return 局面の評価関数(node)\n\n    現在の局面から1手進めた状態を a_1, ..., a_k とする\n    if turn == 先手:\n        return max(minimax(a_i, 次の手番, depth - 1) for a_i in 子)\n    else:\n        return min(minimax(a_i, 次の手番, depth - 1) for a_i in 子)\nこのアルゴリズムは有用ではあるが、探索しなくてもよい頂点まで探索してしまうという無駄がある。 限られた計算機の記憶領域や制限時間のもとでは、この無駄を抑える工夫が望まれる。",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ゲームと探索</span>"
+    ]
+  },
+  {
+    "objectID": "game.html#αβ-枝刈り先取り",
+    "href": "game.html#αβ-枝刈り先取り",
+    "title": "6  ゲームと探索",
+    "section": "6.6 αβ 枝刈り（先取り）",
+    "text": "6.6 αβ 枝刈り（先取り）\nミニマックス法で行われる無駄な探索のうち、「この枝はどうせ親の選択に影響しない」と判明した時点で打ち切るのがαβ法（alpha-beta pruning） である。\nαβ法は、\n\n先手の番でこれまでに保証できる下限値 \\(\\alpha\\)\n後手の番でこれまでに保証できる上限値 \\(\\beta\\)\n\nの二つを管理し、探索中に \\(\\alpha \\geq \\beta\\) になった枝の探索をスキップする（図 Figure 6.3）。\n\n\n\n\n\n\nFigure 6.3: アルファ・ベータ法の実行例\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nαβ法は、深く読む場合に効果が大きい。 1手読みでは枝刈りは全く起きず、むしろ余分な比較が増える。 理想的な枝刈りでも計算量はおよそ半分にしかならないが、それを使って読みの深さを2倍に増やせれば、読みの確かさは飛躍的に向上する。\n\n\nαβ法の擬似コードを示す。詳細は第8章で扱う。\ndef alpha_beta(node, turn, depth, alpha, beta):\n    \"\"\"αβ法（擬似コード）\"\"\"\n    if node の状態 == 先手が勝ち:\n        return 1\n    elif node の状態 == 後手が勝ち:\n        return -1\n    elif node の状態 == 引き分け:\n        return 0\n    if depth == 0:\n        return 局面の評価関数(node)\n\n    現在の局面から1手進めた状態を a_1, ..., a_k とする\n    for i in range(1, k + 1):\n        if alpha is not None and beta is not None and alpha &gt;= beta:\n            break\n        v = alpha_beta(a_i, 次の手番, depth - 1, alpha, beta)\n        if turn == 先手 and (alpha is None or v &gt; alpha):\n            alpha = v\n        if turn == 後手 and (beta is None or v &lt; beta):\n            beta = v\n    return alpha if turn == 先手 else beta\nなお、ミニマックス法もαβ法も、「相手が間違える可能性まで考えて大胆に攻める」というような戦略はとらない。 相手が常に最善を尽くすという仮定のもとで動くため、ある意味消極的な戦略であるとも言える。",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ゲームと探索</span>"
+    ]
+  },
+  {
+    "objectID": "game.html#評価値コストの計算",
+    "href": "game.html#評価値コストの計算",
+    "title": "6  ゲームと探索",
+    "section": "6.7 評価値（コスト）の計算",
+    "text": "6.7 評価値（コスト）の計算\nミニマックス法を使ってすべての終局から根まで遡れば、原理的にはゲームに勝てる。 しかし、計算機の容量・時間の制約から、ゲーム全体を解析できるのは小さなゲームに限られる。 たとえば将棋の場合、ゲームが終了するまでに100手以上かかり、各局面で10種類以上の手が考えられるので、頂点数は少なくとも \\(10^{100}\\) になる。 これを全て計算するのは到底不可能である。 オセロでも状態数は \\(10^{28}\\) ほどあるので、実際にはある程度の深さまで読んで打ち切る。\nすなわち、完全な勝敗が決定しない段階で何らかの評価値を付ける必要がある。 評価値は、先手有利から後手有利まで \\(-1 &lt; \\text{評価値} &lt; 1\\) の実数値とすることが多い。 この値の付け方にはゲームに関する知識が不可欠であり、たとえば将棋なら駒の損得、王将の守備、攻め駒の体勢などを評価する。 オセロでは、角の有無、辺の安定性、可動性などを使う。 これらを定量化したものが評価関数（evaluation function） であり、本実験の主題のひとつである。\nまた、読みを打ち切る深さも重要な要素である。 深く読むほど評価が正確になるのは自明だが、計算時間も指数的に増加する。 評価関数の精度と探索深さは組み合わせて設計する必要がある。",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ゲームと探索</span>"
+    ]
+  },
+  {
+    "objectID": "game.html#まとめ",
+    "href": "game.html#まとめ",
+    "title": "6  ゲームと探索",
+    "section": "6.8 まとめ",
+    "text": "6.8 まとめ\n\n二人完全情報有限零和ゲームは、ゲーム木と minimax 法によって扱える。\n状態空間が大きすぎる場合は、有限の深さで打ち切り、評価関数で局面を数値化する。\n探索の無駄は αβ 枝刈りで削れる。\n評価関数の設計と探索の深さの選択が、強さを決める二大要素である。",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ゲームと探索</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html",
+    "href": "reversi.html",
+    "title": "7  オセロゲームの基本実装",
+    "section": "",
+    "text": "7.1 本章の到達目標\n本章では、Pythonでオセロゲームの基本機能を実装する。 ここで作成する関数は、後の章でゲーム木探索、minimax法、αβ法、評価関数の改良にそのまま再利用する。\n各課題は、reversi_yourid.py に順に追加していく。 動作確認用の assert 文がついている練習は、そのまま test_reversi.py にテストとして追加し、pytest で通ることを確認しながら進めること。",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#本章の到達目標",
+    "href": "reversi.html#本章の到達目標",
+    "title": "7  オセロゲームの基本実装",
+    "section": "",
+    "text": "盤面を表現する。\n手番を交代する。\n盤面を表示する。\n合法手を判定する。\n石を反転する。\nパス、終局、勝敗を判定する。\n人間対人間のオセロゲームを動かす。",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#オセロゲームのルール",
+    "href": "reversi.html#オセロゲームのルール",
+    "title": "7  オセロゲームの基本実装",
+    "section": "7.2 オセロゲームのルール",
+    "text": "7.2 オセロゲームのルール\nオセロは、\\(8 \\times 8\\) の盤上で先手と後手が交互に石を打ち、最終的に石の数の多い方が勝ちとなる二人ゲームである。 本実験では、先手を 1、後手を -1、空きを 0 として盤面を表現する。\nルールを確認しておく。\n\n最初に盤の中央に先手・後手の石を2個ずつ交差するように置く。\n相手の石をはさめる場所にだけ自分の石を置ける。\nはさんだ相手の石はすべて自分の石に反転する。\n先手・後手が交互に1石ずつ打つ。\n打てる場所がない場合はパスとなる。\n打てる場所がある場合、自分の意思でパスすることはできない。\n盤面がすべて埋まるか、両者とも打てなくなれば終了する。\n\n「はさむ」とは、自分の打った石と既に盤面にある自分の石が、縦・横・斜めの8方向のいずれかに並び、その間に相手の石が1つ以上連続して存在することをいう。\n\n\n\n\n\n\nTip\n\n\n\n旧 LISP 版の教材では、最初に \\(4 \\times 4\\) の盤で動作確認をしてから \\(8 \\times 8\\) に拡張する流れを採用していた。 本書では BOARD_SIZE を定数で変更すれば \\(4 \\times 4\\) にも切り替えられるようコードを書く。 小さな盤でデバッグすると合法手や反転を目視で確認しやすい。",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#盤面の表現",
+    "href": "reversi.html#盤面の表現",
+    "title": "7  オセロゲームの基本実装",
+    "section": "7.3 盤面の表現",
+    "text": "7.3 盤面の表現\n盤面はリストのリストで表す。 外側のリストが行、内側のリストが列である。 Pythonの添字は 0 から始まるが、画面表示と入力では人間に分かりやすいように 1 から 8 の番号を使う。\nboard[row][col]\n例えば、board[3][4] は4行5列目を表す。\n\n7.3.1 例題：定数を定義する\n盤面の大きさ、石の値、表示文字、8方向を表す定数を定義する。\nBOARD_SIZE = 8\nBOARD_SENTE = 1\nBOARD_GOTE = -1\nBOARD_EMPTY = 0\n\nBOARD_SENTE_STR = \"*\"\nBOARD_GOTE_STR = \"o\"\nBOARD_EMPTY_STR = \"-\"\n\nBOARD_SYMBOL = {\n    BOARD_SENTE: BOARD_SENTE_STR,\n    BOARD_GOTE:  BOARD_GOTE_STR,\n    BOARD_EMPTY: BOARD_EMPTY_STR,\n}\n\nBOARD_DIRECTIONS = [\n    (0,  1),   # 右\n    (1,  1),   # 右下\n    (1,  0),   # 下\n    (1, -1),   # 左下\n    (0, -1),   # 左\n    (-1, -1),  # 左上\n    (-1, 0),   # 上\n    (-1, 1),   # 右上\n]\n本資料では、先手を *、後手を o と表示する。 BOARD_SENTE と BOARD_GOTE は、盤面上の石を表す値であると同時に、手番を表す値としても使う。\n\n\n7.3.2 練習1：初期盤面を作る\n初期盤面を返す関数 initial_board() を定義せよ。 戻り値は \\(8 \\times 8\\) のリストのリストであり、中央4マスだけに石が置かれているものとする。\ndef initial_board():\n    ...\n動作確認:\nboard = initial_board()\nassert board[3][3] == BOARD_GOTE\nassert board[3][4] == BOARD_SENTE\nassert board[4][3] == BOARD_SENTE\nassert board[4][4] == BOARD_GOTE\nassert board[0][0] == BOARD_EMPTY\n\n\n\n\n\n\nTipヒント\n\n\n\nリスト内包表記を使うと、\\(N \\times N\\) の空盤を簡潔に作れる。 中央4マスだけ後で代入すればよい。\nboard = [[BOARD_EMPTY for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#手番と表示",
+    "href": "reversi.html#手番と表示",
+    "title": "7  オセロゲームの基本実装",
+    "section": "7.4 手番と表示",
+    "text": "7.4 手番と表示\n\n7.4.1 練習2：手番を交代する\n手番 turn を引数に取り、次の手番を返す関数 change_turn(turn) を定義せよ。\ndef change_turn(turn):\n    ...\n動作確認:\nassert change_turn(BOARD_SENTE) == BOARD_GOTE\nassert change_turn(BOARD_GOTE) == BOARD_SENTE\n\n\n7.4.2 練習3：盤面を表示する\n盤面 board を受け取り、現在の盤面を表示する関数 print_board(board) を定義せよ。 表示は次の形式に合わせること。\nR/C 1 2 3 4 5 6 7 8\n  1 - - - - - - - -\n  2 - - - - - - - -\n  3 - - - - - - - -\n  4 - - - o * - - -\n  5 - - - * o - - -\n  6 - - - - - - - -\n  7 - - - - - - - -\n  8 - - - - - - - -\n合わせて、現在の手番を表示する補助関数 print_current_turn(turn) も定義せよ。\n\n\n\n\n\n\nTipヒント\n\n\n\n1行目は \"R/C 1 2 3 4 5 6 7 8\" のように固定文字を表示する。 各行の先頭の番号は f\"  {row + 1}\" のように row + 1 を表示する。 石の表示は BOARD_SYMBOL[stone] を使えば1行で書ける。",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#盤面の走査",
+    "href": "reversi.html#盤面の走査",
+    "title": "7  オセロゲームの基本実装",
+    "section": "7.5 盤面の走査",
+    "text": "7.5 盤面の走査\n合法手を判定するには、石を置いた場所から8方向を調べる必要がある。 ある方向について、次の3通りを区別する。\n\n自分の石が出る前に盤面の外に出た。\n自分の石が出る前に空きマスに到達した。\n相手の石を1つ以上はさんだ後、自分の石に到達した。\n\nこのうち、相手の石を反転できるのは3の場合だけである。\n\n7.5.1 練習4：1方向に反転できる数を数える\nboard の (row0, col0) に turn の石を置くと仮定し、(row_inc, col_inc) 方向に反転できる相手の石の数を返す関数 board_scan(board, row0, col0, row_inc, col_inc, turn) を定義せよ。\ndef board_scan(board, row0, col0, row_inc, col_inc, turn):\n    ...\n動作確認:\nboard = initial_board()\nassert board_scan(board, 2, 3, 1, 0, BOARD_SENTE) == 1\nassert board_scan(board, 2, 2, 1, 1, BOARD_SENTE) == 0\nassert board_scan(board, 0, 0, 1, 1, BOARD_SENTE) == 0\n\n\n\n\n\n\nTipヒント\n\n\n\n(row0, col0) そのものは、これから石を置く空きマスである。 したがって、走査は (row0 + row_inc, col0 + col_inc) から始める。 ループの中では「枠外」「空きマス」「自分の石」「相手の石」の4ケースを区別する。 自分の石に到達したらそれまでに数えた相手石の数を返す。 枠外や空きマスに到達したら、はさめなかったので 0 を返す。\n\n\n\n\n7.5.2 練習5：合法手を判定する\n盤面 board の (row, col) に turn の石を置けるかを判定する関数 board_movable(board, row, col, turn) を定義せよ。 そのマスが空きであり、8方向のいずれかで1つ以上反転できれば True を返す。\ndef board_movable(board, row, col, turn):\n    ...\n動作確認:\nboard = initial_board()\nassert board_movable(board, 2, 3, BOARD_SENTE)\nassert not board_movable(board, 2, 3, BOARD_GOTE)\nassert not board_movable(board, 3, 3, BOARD_SENTE)\n\n\n7.5.3 練習6：どこかに打てるかを判定する\n手番 turn が盤面上のどこかに石を置けるかどうかを判定する関数 board_movable_any(board, turn) を定義せよ。\ndef board_movable_any(board, turn):\n    ...\n動作確認:\nboard = initial_board()\nassert board_movable_any(board, BOARD_SENTE)\nassert board_movable_any(board, BOARD_GOTE)",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#盤面の更新",
+    "href": "reversi.html#盤面の更新",
+    "title": "7  オセロゲームの基本実装",
+    "section": "7.6 盤面の更新",
+    "text": "7.6 盤面の更新\n\n7.6.1 練習7：石を置き、反転する\n盤面 board の (row, col) に turn の石を置き、8方向について反転できる石をすべて反転する関数 board_move(board, row, col, turn) を定義せよ。 この関数は盤面を直接更新してよい。\ndef board_move(board, row, col, turn):\n    ...\n動作確認:\nboard = initial_board()\nboard_move(board, 2, 3, BOARD_SENTE)\nassert board[2][3] == BOARD_SENTE\nassert board[3][3] == BOARD_SENTE\n\n\n\n\n\n\nNote後の探索でのコピー\n\n\n\n後の章でゲーム木探索を行う際は、元の盤面を壊さないようにコピーを作ってから board_move() を呼ぶ。 盤面はリストのリストなので、new_board = [row[:] for row in board] のように各行をコピーすれば十分である（深いコピーである copy.deepcopy より速い）。",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#終局と評価",
+    "href": "reversi.html#終局と評価",
+    "title": "7  オセロゲームの基本実装",
+    "section": "7.7 終局と評価",
+    "text": "7.7 終局と評価\n\n7.7.1 練習8：石の数を数える\n盤面 board にある turn の石の数を数える関数 board_number_check(board, turn) を定義せよ。\ndef board_number_check(board, turn):\n    ...\n動作確認:\nboard = initial_board()\nassert board_number_check(board, BOARD_SENTE) == 2\nassert board_number_check(board, BOARD_GOTE) == 2\n\n\n7.7.2 練習9：盤面の基本評価値を返す\n石数に基づく評価関数 board_eval(board) を定義せよ。 評価値は次の式で求める。\n\\[\n\\frac{\\text{先手の石数} - \\text{後手の石数}}{\\text{先手の石数} + \\text{後手の石数}}\n\\]\nこの値は、先手が有利なら正、後手が有利なら負、互角なら \\(0\\) になる。 分母が \\(0\\) になるとき（理論上は起きない）は 0.0 を返すようにしておく。\ndef board_eval(board):\n    ...\n動作確認:\nboard = initial_board()\nassert board_eval(board) == 0.0\n\n\n7.7.3 練習10：盤面の状態を判定する\n盤面 board と手番 turn を受け取り、現在の状態を返す関数 board_state(board, turn) を定義せよ。 返す値は次の3通りである。\n\n\n\nturn が打てるか\n相手が打てるか\n戻り値\n意味\n\n\n\n\nはい\n–\nNone\nゲーム継続中\n\n\nいいえ\nはい\n\"pass\"\nパス\n\n\nいいえ\nいいえ\nboard_eval(board)\n終局（評価値）\n\n\n\ndef board_state(board, turn):\n    ...\n\n\n\n\n\n\nWarning戻り値の型に注意\n\n\n\nboard_state() は None、str（“pass”）、float（評価値） の3種類の型を返す。 これを受ける側では、isinstance(state, float) で終局を判定する。 評価値が偶然 0.0 であっても isinstance(state, float) は True になるので、if state: のような偽値チェックは使わない。\n\n\n\n\n7.7.4 練習11：結果を表示する\n盤面 board と board_state() の終局評価値 state を受け取り、最終盤面、勝者、石数を表示する関数 game_result(board, state) を定義せよ。\ndef game_result(board, state):\n    ...\n表示例:\nGame Won by Sente *\nScore is 35 - 29\nstate が 0 のときは Draw と表示する。",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#人間による着手",
+    "href": "reversi.html#人間による着手",
+    "title": "7  オセロゲームの基本実装",
+    "section": "7.8 人間による着手",
+    "text": "7.8 人間による着手\n\n7.8.1 練習12：人間の入力で石を置く\n盤面 board、手番 turn、手数 count を受け取り、人間から行と列を入力させて石を置く関数 play_by_human(board, turn, count) を定義せよ。 入力は 4 3 のように、行番号と列番号を空白区切りで受け取る。 入力された番号は1から8であり、盤面の添字に使うときは1を引く。\ndef play_by_human(board, turn, count):\n    ...\n満たすべき条件は次の通りである。\n\n合法手がない場合は何も入力させずに戻る（呼び出し側でパス処理を行う）。\n入力が2つの整数でない場合は再入力させる。\n盤面外、または合法手でない場合は再入力させる。\n合法手であれば board_move() で盤面を更新して戻る。\n\n\n\n\n\n\n\nTipヒント\n\n\n\n入力文字列を整数2つに変換するには次のようにする。\ninp = input(f\"({count}) Enter row and col for {BOARD_SYMBOL[turn]}: \")\nparts = inp.strip().split()\nif len(parts) != 2:\n    continue\ntry:\n    row = int(parts[0]) - 1\n    col = int(parts[1]) - 1\nexcept ValueError:\n    continue",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#人間対人間のゲーム",
+    "href": "reversi.html#人間対人間のゲーム",
+    "title": "7  オセロゲームの基本実装",
+    "section": "7.9 人間対人間のゲーム",
+    "text": "7.9 人間対人間のゲーム\n\n7.9.1 練習13：汎用ゲーム関数を定義する\n第7章でコンピュータ対コンピュータの実装を行うことを見据えて、ここでは汎用のゲーム関数を一つ定義する。 othello(sente_gote, yomi_depth) は次の通りに振る舞う。\n\n\n\nsente_gote\n意味\n\n\n\n\nBOARD_SENTE\nコンピュータが先手、人間が後手\n\n\nBOARD_GOTE\n人間が先手、コンピュータが後手\n\n\nBOARD_EMPTY\n先手も後手もコンピュータ\n\n\nその他（例：None）\n先手も後手も人間（人間対人間）\n\n\n\nyomi_depth はコンピュータの先読み深さである。 人間対人間のときは使われない（None でよい）。\ndef othello(sente_gote, yomi_depth=None):\n    board = initial_board()\n    turn = BOARD_SENTE   # 初期手番は常に先手\n    count = 1\n    ...\n処理の流れは次の通りである。\n\nstate = board_state(board, turn) で現在の状態を確認する。\nstate が float なら終局なので game_result(board, state) を呼んで終了する。\nstate == \"pass\" なら、パスのメッセージを表示し、手数を増やさずに手番だけ交代する。\nそれ以外なら、盤面を表示し、コンピュータ担当なら play_by_machine(board, turn, count, yomi_depth)、人間担当なら play_by_human(board, turn, count) を呼ぶ。\n手番を交代し、手数を進める。\n\nplay_by_machine は次章で実装するので、ここでは未定義のままにし、sente_gote が「コンピュータ担当を含まない値」（例えば None）のときだけ動かせるようにしておく。\n\n\n\n\n\n\nImportant重要：初期手番は常に先手\n\n\n\nturn の初期値は BOARD_SENTE である。 sente_gote の値ではない点に注意せよ（sente_gote はコンピュータの担当を表すだけ）。\n\n\n\n\n7.9.2 練習14：人間対人間で動作確認する\nothello(None) を実行し、人間対人間で初期盤面から最後まで実行できることを確認せよ。\nここまで実装できたら、pytest でテストを通し、Gitでコミットしておくこと。\npython -m pytest -v\ngit add reversi_yourid.py test_reversi.py\ngit commit -m \"implement human reversi game (ex.1-14)\"",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "reversi.html#まとめ",
+    "href": "reversi.html#まとめ",
+    "title": "7  オセロゲームの基本実装",
+    "section": "7.10 まとめ",
+    "text": "7.10 まとめ\n\n本章では、盤面表現・走査・合法手判定・反転・終局判定・人間入力という、オセロゲームのルール部分を実装した。\n状態判定 board_state() は None / \"pass\" / float の3通りの値を返す点に注意する。\n汎用ゲーム関数 othello(sente_gote, yomi_depth) の枠組みを用意したので、次章でコンピュータの着手 play_by_machine を実装すれば、人間対コンピュータ・コンピュータ対コンピュータが自動的に動くようになる。",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>オセロゲームの基本実装</span>"
+    ]
+  },
+  {
+    "objectID": "gametree.html",
+    "href": "gametree.html",
+    "title": "8  minimax 法によるゲーム木探索",
+    "section": "",
+    "text": "8.1 節点のデータ構造\n本章では、人間が入力する代わりに、コンピュータが次の手を選ぶ仕組みを実装する。 現在の盤面から合法手をすべて展開すると、1手先の盤面の集合が得られる。 さらに、その各盤面から相手の合法手を展開していくと、ゲーム木が得られる。\n本章の到達目標は、minimax 法を用いてコンピュータが手を選べるようにすることである。\nゲーム木の節点には、盤面、その盤面に至るために打った手、評価値などを保存する。 Python ではクラスを使って表現する。",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>minimax 法によるゲーム木探索</span>"
+    ]
+  },
+  {
+    "objectID": "gametree.html#節点のデータ構造",
+    "href": "gametree.html#節点のデータ構造",
+    "title": "8  minimax 法によるゲーム木探索",
+    "section": "",
+    "text": "8.1.1 例題：Node クラスを定義する\nclass Node:\n    def __init__(self, board, turn, row, col, value):\n        self.board = board\n        self.turn = turn\n        self.row = row\n        self.col = col\n        self.value = value\n各属性の意味は次の通りである。\n\nboard: その節点に対応する盤面（リストのリスト）。\nturn: その盤面に至る手を打った手番（BOARD_SENTE または BOARD_GOTE）。\nrow, col: その盤面に至るために置いた位置（0始まり）。\nvalue: その節点に与えられた評価値。\n\n\n\n\n\n\n\nNote\n\n\n\nここでの turn は「この節点の盤面で次に打つ手番」ではなく、「この盤面に至るために直前に打った手番」である点に注意する。 初期局面ではまだ着手がないので、turn には便宜上 BOARD_SENTE、row/col には 0 などの仮の値を入れておく。\nroot = Node(initial_board(), BOARD_SENTE, 0, 0, 0.0)",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>minimax 法によるゲーム木探索</span>"
+    ]
+  },
+  {
+    "objectID": "gametree.html#節点の操作関数",
+    "href": "gametree.html#節点の操作関数",
+    "title": "8  minimax 法によるゲーム木探索",
+    "section": "8.2 節点の操作関数",
+    "text": "8.2 節点の操作関数\n探索に必要な操作は大きく3つである。\n\n節点が終局、パス、継続中のどれであるかを判定する。\n節点を評価する。\n節点から子節点を生成する。\n\n\n8.2.1 例題：節点の状態を返す\n節点 node の盤面に対して、手番 turn の状態を返す関数 node_state(node, turn, count) を定義する。 count は後で局面の段階に応じて評価関数を切り替えるために受け取る引数で、現時点では使わない。\ndef node_state(node, turn, count):\n    return board_state(node.board, turn)\n\n\n8.2.2 例題：節点を評価する\nまずは単純化のため、探索を打ち切った節点の評価値として石数評価 board_eval() を使う。\ndef eval_node(node, turn, count):\n    return board_eval(node.board)\n第9章で、この関数をより強い評価関数に差し替える。\n\n\n8.2.3 練習15：子節点を生成する\n手番 turn において、節点 parent から打てるすべての手を調べ、その手を打った後の子節点のリストを返す関数 expand_node(parent, turn) を定義せよ。\ndef expand_node(parent, turn):\n    children = []\n    ...\n    return children\n実装上の注意:\n\nparent.board を直接変更してはいけない。\n合法手ごとに new_board = [row[:] for row in parent.board] で盤面をコピーする。\nコピーした盤面に board_move(new_board, row, col, turn) を適用する。\nNode(new_board, turn, row, col, 0.0) を作って children に追加する。\n\n動作確認:\nroot = Node(initial_board(), BOARD_SENTE, 0, 0, 0.0)\nchildren = expand_node(root, BOARD_SENTE)\nassert len(children) == 4\nassert all(isinstance(child, Node) for child in children)",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>minimax 法によるゲーム木探索</span>"
+    ]
+  },
+  {
+    "objectID": "gametree.html#minimax-法の実装",
+    "href": "gametree.html#minimax-法の実装",
+    "title": "8  minimax 法によるゲーム木探索",
+    "section": "8.3 minimax 法の実装",
+    "text": "8.3 minimax 法の実装\nminimax 法では、先手は評価値を最大化し、後手は評価値を最小化する。 評価値は「先手が有利な盤面ほど大きく、後手が有利な盤面ほど小さい」ように設計しているからである。\n探索の基本方針は次の通りである。\n\n終局なら、その盤面の評価値を返す。\n読みの深さが \\(0\\) なら、評価関数で評価した値を返す。\nパスなら、手番だけを交代して同じ深さで探索を続ける。\n先手番なら、子節点の中で評価値が最大のものを選ぶ。\n後手番なら、子節点の中で評価値が最小のものを選ぶ。\n\n\n8.3.1 練習16：minimax 本体を定義する\n節点 node、手番 turn、手数 count、読みの深さ depth を受け取り、最善手に対応する節点を返す関数 minimax(node, turn, count, depth) を定義せよ。\ndef minimax(node, turn, count, depth):\n    state = node_state(node, turn, count)\n    ...\n以下の場合分けを行う。\n\nstate が float なら終局である。node.value = state を入れて node を返す。\ndepth == 0 なら、node.value = eval_node(node, turn, count) を入れて node を返す。\nstate == \"pass\" なら、手番を交代して同じ節点から探索を続ける（depth は変更しない）。\nそれ以外なら、expand_node() で子節点を作り、minimax_children() に渡す。\n\nfloat かどうかは次のように判定する。\nif isinstance(state, float):\n    ...\n\n\n8.3.2 練習17：子節点の中から最善手を選ぶ\nchildren の各節点について再帰的に minimax() を呼び出し、手番に応じて最大または最小の値を持つ節点を返す関数 minimax_children(children, turn, count, depth) を定義せよ。\ndef minimax_children(children, turn, count, depth):\n    new_turn = change_turn(turn)\n    new_depth = depth - 1\n    new_count = count + 1\n    val = None\n    result_node = None\n    for child in children:\n        v = minimax(child, new_turn, new_count, new_depth).value\n        if val is None or (turn == BOARD_SENTE and v &gt; val) or (turn == BOARD_GOTE and v &lt; val):\n            val = v\n            result_node = Node(child.board, child.turn, child.row, child.col, v)\n    return result_node\n戻り値は、評価値そのものではなく、次に打つ手に対応する Node とする。 返す節点の value には、探索で得られた評価値を保存する。\n動作確認:\nroot = Node(initial_board(), BOARD_SENTE, 0, 0, 0.0)\nbest = minimax(root, BOARD_SENTE, 1, 2)\nassert isinstance(best, Node)\nassert board_movable(initial_board(), best.row, best.col, BOARD_SENTE)",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>minimax 法によるゲーム木探索</span>"
+    ]
+  },
+  {
+    "objectID": "gametree.html#コンピュータの着手",
+    "href": "gametree.html#コンピュータの着手",
+    "title": "8  minimax 法によるゲーム木探索",
+    "section": "8.4 コンピュータの着手",
+    "text": "8.4 コンピュータの着手\n\n8.4.1 練習18：コンピュータが石を置く\n盤面 board、手番 turn、手数 count、読みの深さ depth を受け取り、minimax 法で選んだ手を盤面に反映する関数 play_by_machine(board, turn, count, depth) を定義せよ。\ndef play_by_machine(board, turn, count, depth):\n    root = Node(board, turn, 0, 0, 0.0)\n    best_node = minimax(root, turn, count, depth)\n    row, col = best_node.row, best_node.col\n    board_move(board, row, col, turn)\n    print(f\"({count}) My move is {row + 1} {col + 1}.\")\nbest_node.row, best_node.col が次に打つ位置である。 1始まりに直して表示する点に注意する。",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>minimax 法によるゲーム木探索</span>"
+    ]
+  },
+  {
+    "objectID": "gametree.html#人間対コンピュータコンピュータ対コンピュータ",
+    "href": "gametree.html#人間対コンピュータコンピュータ対コンピュータ",
+    "title": "8  minimax 法によるゲーム木探索",
+    "section": "8.5 人間対コンピュータ、コンピュータ対コンピュータ",
+    "text": "8.5 人間対コンピュータ、コンピュータ対コンピュータ\n\n8.5.1 練習19：8×8盤で動作を確認する\n第6章の練習13で定義した othello(sente_gote, yomi_depth) は、play_by_machine を呼び出すように作っておけば、本章の play_by_machine がそのまま使われる。 8×8盤で次のすべてが動くことを確認せよ。\nothello(BOARD_GOTE, 3)    # 人間先手 vs コンピュータ後手\nothello(BOARD_SENTE, 3)   # コンピュータ先手 vs 人間後手\nothello(BOARD_EMPTY, 2)   # コンピュータ vs コンピュータ\n確認すべき項目は次の通り。\n\n初期盤面で先手の合法手が4つである。\n人間対人間で最後まで実行できる（前章で確認済み）。\n人間対コンピュータで最後まで実行できる。\nコンピュータ対コンピュータで最後まで実行できる。\nパスが発生しても手数の扱いが破綻しない。\n探索深さを大きくすると思考時間が伸びる（深さ3と5を比較）。\n\n確認できたら、Gitでコミットしておくこと。\ngit add reversi_yourid.py test_reversi.py\ngit commit -m \"implement minimax reversi player (ex.15-19)\"",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>minimax 法によるゲーム木探索</span>"
+    ]
+  },
+  {
+    "objectID": "gametree.html#まとめ",
+    "href": "gametree.html#まとめ",
+    "title": "8  minimax 法によるゲーム木探索",
+    "section": "8.6 まとめ",
+    "text": "8.6 まとめ\n\nゲーム木の節点を Node クラスで表現し、expand_node() で子節点を作り、minimax() で再帰的に最善手を探索した。\nパスは「手番だけ交代して同じ深さで再帰呼び出し」で扱う。\n終局は state が float であることで判定する。\n探索深さを大きくすると、計算時間は指数的に増える。次章ではこれを抑える αβ 枝刈りを導入する。",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>minimax 法によるゲーム木探索</span>"
+    ]
+  },
+  {
+    "objectID": "alphabeta.html",
+    "href": "alphabeta.html",
+    "title": "9  αβ 枝刈り",
+    "section": "",
+    "text": "9.1 αとβ\nminimax 法は、すべての子節点を探索してから最善手を決める。 しかし、探索の途中で「この枝は最終的に選ばれない」と分かる場合がある。 そのような枝の探索を省略する方法がαβ 枝刈り（alpha-beta pruning） である。\nαβ 法は、同じ評価関数・同じ子節点の順序であれば minimax 法と同じ手を返す。 しかし、探索する節点数を減らせるため、同じ計算予算でより深い読みが可能になる。\nαβ 法では、探索中に次の2つの値を持ち回る。\n探索中に alpha &gt;= beta になったら、それ以上その枝を調べても親の選択は変わらない。 そのため、そこで探索を打ち切る。",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>αβ 枝刈り</span>"
+    ]
+  },
+  {
+    "objectID": "alphabeta.html#αとβ",
+    "href": "alphabeta.html#αとβ",
+    "title": "9  αβ 枝刈り",
+    "section": "",
+    "text": "alpha：先手がこれまでに保証できている下限値\nbeta：後手がこれまでに保証できている上限値",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>αβ 枝刈り</span>"
+    ]
+  },
+  {
+    "objectID": "alphabeta.html#αβ-法の本体",
+    "href": "alphabeta.html#αβ-法の本体",
+    "title": "9  αβ 枝刈り",
+    "section": "9.2 αβ 法の本体",
+    "text": "9.2 αβ 法の本体\n\n9.2.1 練習20：alpha_beta() を定義する\n節点 node、手番 turn、手数 count、読みの深さ depth、下限 alpha、上限 beta を受け取り、最善手に対応する節点を返す関数 alpha_beta(node, turn, count, depth, alpha, beta) を定義せよ。\ndef alpha_beta(node, turn, count, depth, alpha, beta):\n    state = node_state(node, turn, count)\n    ...\n基本構造は minimax() と同じである。\n\n終局なら、node.value = state を設定して node を返す。\n深さ限界なら、node.value = eval_node(node, turn, count) を設定して node を返す。\nパスなら、手番を交代して同じ深さで再帰呼び出しする。\nそれ以外なら、子節点を生成して alpha_beta_children() で選ぶ。\n\nalpha と beta は、最初はまだ値がないため None を渡す（呼び出し側で alpha_beta(node, turn, count, depth, None, None) のようにする）。",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>αβ 枝刈り</span>"
+    ]
+  },
+  {
+    "objectID": "alphabeta.html#子節点の探索",
+    "href": "alphabeta.html#子節点の探索",
+    "title": "9  αβ 枝刈り",
+    "section": "9.3 子節点の探索",
+    "text": "9.3 子節点の探索\n\n9.3.1 練習21：alpha_beta_children() を定義する\nchildren を順に探索し、αβ 枝刈りを行いながら最善の節点を返す関数 alpha_beta_children(children, turn, count, depth, alpha, beta) を定義せよ。\ndef alpha_beta_children(children, turn, count, depth, alpha, beta):\n    new_turn = change_turn(turn)\n    new_depth = depth - 1\n    new_count = count + 1\n    val = None\n    result_node = None\n    for child in children:\n        v = alpha_beta(child, new_turn, new_count, new_depth, alpha, beta).value\n        if turn == BOARD_SENTE:\n            if val is None or v &gt; val:\n                val = v\n                result_node = Node(child.board, child.turn, child.row, child.col, v)\n            if alpha is None or v &gt; alpha:\n                alpha = v\n        elif turn == BOARD_GOTE:\n            if val is None or v &lt; val:\n                val = v\n                result_node = Node(child.board, child.turn, child.row, child.col, v)\n            if beta is None or v &lt; beta:\n                beta = v\n        if alpha is not None and beta is not None and alpha &gt;= beta:\n            break\n    return result_node\n各部分の意味を確認する。\n\n先手番では、子節点の最大評価値を選び、alpha（下限）を更新する。\n後手番では、子節点の最小評価値を選び、beta（上限）を更新する。\n最後に alpha &gt;= beta になっていたらループを抜けて以降の子節点を探索しない（枝刈り）。\n\n\n\n\n\n\n\nTip注意：None の扱い\n\n\n\n最初は alpha も beta も None である。 比較の前に必ず is not None を確認する。 これは「まだ何も値がない」状態を表すためのものである。 最初の子の評価値が決まれば、alpha（または beta）はその値で初期化される。",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>αβ 枝刈り</span>"
+    ]
+  },
+  {
+    "objectID": "alphabeta.html#コンピュータの着手に組み込む",
+    "href": "alphabeta.html#コンピュータの着手に組み込む",
+    "title": "9  αβ 枝刈り",
+    "section": "9.4 コンピュータの着手に組み込む",
+    "text": "9.4 コンピュータの着手に組み込む\n\n9.4.1 練習22：play_by_machine() をαβ法に切り替える\nplay_by_machine() で呼び出す探索関数を minimax() から alpha_beta() に変更する。\ndef play_by_machine(board, turn, count, depth):\n    node = Node(board, turn, 0, 0, 0.0)\n    # best_node = minimax(node, turn, count, depth)\n    best_node = alpha_beta(node, turn, count, depth, None, None)\n    row, col = best_node.row, best_node.col\n    board_move(board, row, col, turn)\n    print(f\"({count}) My move is {row + 1} {col + 1}.\")\nminimax 法と αβ 法は、同じ評価関数と同じ子節点の順序であれば、同じ手を選ぶ。 結果が大きく異なる場合は、value の更新、手番の交代、パス処理を確認すること。\n\n\n\n\n\n\nNote切り替えを実験で残すコツ\n\n\n\n両方の関数を残して切り替え可能にしておくと、後で比較しやすい。 たとえばモジュール変数 USE_ALPHA_BETA = True を導入して、\ndef play_by_machine(board, turn, count, depth):\n    node = Node(board, turn, 0, 0, 0.0)\n    if USE_ALPHA_BETA:\n        best_node = alpha_beta(node, turn, count, depth, None, None)\n    else:\n        best_node = minimax(node, turn, count, depth)\n    ...\nのように書くと、評価関数を変えずに探索手法だけ切り替えて比較できる。",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>αβ 枝刈り</span>"
+    ]
+  },
+  {
+    "objectID": "alphabeta.html#探索効率の比較",
+    "href": "alphabeta.html#探索効率の比較",
+    "title": "9  αβ 枝刈り",
+    "section": "9.5 探索効率の比較",
+    "text": "9.5 探索効率の比較\n\n9.5.1 練習23：呼び出し回数を数える\nminimax 法と αβ 法の効率の違いを定量的に確認するため、探索関数が呼ばれた回数を数える。 Python では、モジュール内のグローバル変数を使うと簡潔に書ける。\nNODE_CHECK_COUNT = 0\n\ndef node_check_begin():\n    global NODE_CHECK_COUNT\n    NODE_CHECK_COUNT = 0\n\ndef node_check():\n    global NODE_CHECK_COUNT\n    NODE_CHECK_COUNT += 1\n\ndef node_check_end():\n    print(f\"{NODE_CHECK_COUNT} nodes checked.\")\nminimax() と alpha_beta() の先頭に node_check() を呼び、play_by_machine() の前後で node_check_begin()、node_check_end() を呼ぶ。\ndef play_by_machine(board, turn, count, depth):\n    node_check_begin()\n    node = Node(board, turn, 0, 0, 0.0)\n    best_node = alpha_beta(node, turn, count, depth, None, None)\n    node_check_end()\n    ...\n\n\n9.5.2 練習24：実験の記録\n比較する条件を揃えて、minimax 法と αβ 法の探索節点数・実行時間を表に記録せよ。\n\n\n\n探索深さ\n手法\n探索節点数\n実行時間 [s]\n選んだ手\n\n\n\n\n3\nminimax\n\n\n\n\n\n3\nαβ\n\n\n\n\n\n4\nminimax\n\n\n\n\n\n4\nαβ\n\n\n\n\n\n5\nminimax\n\n\n\n\n\n5\nαβ\n\n\n\n\n\n\n実行時間は time.perf_counter() を使う。\nimport time\n\nstart = time.perf_counter()\nbest_node = alpha_beta(node, turn, count, depth, None, None)\nelapsed = time.perf_counter() - start\nprint(f\"{elapsed:.3f} sec\")\n\n\n9.5.3 練習25：考察\n次の点について考察せよ。\n\n浅い深さでは αβ の効果が小さい理由。\n深い深さでは αβ の効果が大きくなる理由。\n子節点の探索順序を変えると効果はどう変わるか。\n\n確認できたら、Git でコミットしておくこと。\ngit add reversi_yourid.py test_reversi.py\ngit commit -m \"implement alpha-beta pruning (ex.20-25)\"",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>αβ 枝刈り</span>"
+    ]
+  },
+  {
+    "objectID": "alphabeta.html#まとめ",
+    "href": "alphabeta.html#まとめ",
+    "title": "9  αβ 枝刈り",
+    "section": "9.6 まとめ",
+    "text": "9.6 まとめ\n\nαβ 法は、minimax 法と同じ最適解を返しつつ、探索する節点数を減らす。\n効果が出るのは「ある程度深く読む」場合。理想的な枝刈りでも計算量は約 \\(1/2\\) にしかならないが、その分深く読むことで強さは大きく向上する。\n子節点の順序が良ければ枝刈りの効果はさらに大きくなる。これを生かす工夫は応用課題として考えられる。",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>αβ 枝刈り</span>"
+    ]
+  },
+  {
+    "objectID": "huristics.html",
+    "href": "huristics.html",
+    "title": "10  ヒューリスティック評価関数",
+    "section": "",
+    "text": "10.1 局面の段階\nminimax 法・αβ 法では、終局まで探索できれば勝敗を正確に求められる。 しかし、\\(8 \\times 8\\) のオセロを終局まで全探索することは現実的ではない。 そのため、ある深さで探索を打ち切り、その時点の盤面に評価値を与える必要がある。\n完全な解ではないが、問題に関する知識を使って良さそうな値を与える方法をヒューリスティック評価と呼ぶ。 本章では、石数だけでない評価関数を段階的に実装する。\nオセロでは、序盤・中盤・終盤で良い手の性質が変わる。 旧 LISP 版テキストでも、おおよそ次のように分割して考えてきた。\n本実験の完成版では、手数 count に応じて評価の重みを変える。\n以下の練習で board_eval2 ～ board_eval5 を順に実装し、最後にこれらを組み合わせて eval_node を完成させる。",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>ヒューリスティック評価関数</span>"
+    ]
+  },
+  {
+    "objectID": "huristics.html#局面の段階",
+    "href": "huristics.html#局面の段階",
+    "title": "10  ヒューリスティック評価関数",
+    "section": "",
+    "text": "序盤（1～20手）：石を取りすぎず、相手の自由度を下げる。中央の32マスでの陣取り。\n中盤（21～40手）：辺の攻防、中割り・中抜き、可動性。\n終盤（41手～）：隅の攻防、確定石、できるだけ深く読む。深読みした時点で多くの石を取る。\n\n\ndef eval_node(node, turn, count):\n    board = node.board\n    if count &lt; 25:\n        ...   # 序盤\n    elif count &lt; 40:\n        ...   # 中盤\n    elif count &lt; 60:\n        ...   # 終盤前\n    else:\n        return board_eval(board)   # 終盤",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>ヒューリスティック評価関数</span>"
+    ]
+  },
+  {
+    "objectID": "huristics.html#位置による評価board_eval2",
+    "href": "huristics.html#位置による評価board_eval2",
+    "title": "10  ヒューリスティック評価関数",
+    "section": "10.2 位置による評価（board_eval2）",
+    "text": "10.2 位置による評価（board_eval2）\nオセロでは、角は非常に強く、角の隣は危険になることが多い。 そこで、盤面上の各マスに点数を与え、自分の石がある場所の点数を加算し、相手の石がある場所の点数を減算する。\n\n10.2.1 例題：盤面の位置点を定義する\nBOARD_POINT = [\n    [ 30, -12,  0.1, -0.9, -0.9,  0.1, -12,  30],\n    [-12, -15, -3,   -3,   -3,   -3,   -15, -12],\n    [ 0.1, -3,  0,   -1,   -1,    0,   -3,   0.1],\n    [-0.9, -3, -1,   -1,   -1,   -1,   -3,  -0.9],\n    [-0.9, -3, -1,   -1,   -1,   -1,   -3,  -0.9],\n    [ 0.1, -3,  0,   -1,   -1,    0,   -3,   0.1],\n    [-12, -15, -3,   -3,   -3,   -3,   -15, -12],\n    [ 30, -12,  0.1, -0.9, -0.9,  0.1, -12,  30],\n]\nこの値は一例である。 角（4隅）に高い点数、その隣（C打ち・X打ちの位置）に大きな負の点数を与えている。 最終課題では、各自で値を変更して強さの変化を調べてよい。\n\n\n10.2.2 練習26：位置点による評価を実装する\n盤面 board と重み omomi を受け取り、位置点に基づく評価値を返す関数 board_eval2(board, omomi) を定義せよ。\ndef board_eval2(board, omomi):\n    count = 0.0\n    ...\n    return count * omomi\n評価の考え方:\n\n先手の石（BOARD_SENTE）なら + BOARD_POINT[row][col] を加える。\n後手の石（BOARD_GOTE）なら - BOARD_POINT[row][col] を加える（BOARD_GOTE = -1 を掛けることで実現）。\n空きマスは評価に影響させない。\n\nつまり、各マスについて BOARD_POINT[row][col] * board[row][col] を合計し、最後に omomi を掛ければよい。\n動作確認:\nboard = initial_board()\nv = board_eval2(board, 3)\nassert isinstance(v, float)\n# 初期盤面では先手後手の位置点は対称なので 0.0 になるはず\nassert v == 0.0",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>ヒューリスティック評価関数</span>"
+    ]
+  },
+  {
+    "objectID": "huristics.html#可動性の評価board_eval3",
+    "href": "huristics.html#可動性の評価board_eval3",
+    "title": "10  ヒューリスティック評価関数",
+    "section": "10.3 可動性の評価（board_eval3）",
+    "text": "10.3 可動性の評価（board_eval3）\n現在打てる手が多いほど、次に選べる選択肢が多い。 逆に、相手の合法手を減らせる手は有利になりやすい。\n\n10.3.1 練習27：合法手の位置を評価する\n盤面 board、手番 turn、重み omomi を受け取り、turn が打てる場所を評価する関数 board_eval3(board, turn, omomi) を定義せよ。\ndef board_eval3(board, turn, omomi):\n    count = 0.0\n    for row in range(BOARD_SIZE):\n        for col in range(BOARD_SIZE):\n            if board_movable(board, row, col, turn):\n                count += turn * (BOARD_POINT[row][col] + omomi)\n    return count\nturn が先手なら正方向、後手なら負方向に評価される。 omomi は「とにかく合法手があるだけで嬉しい」という基底点であり、これに位置点を加えて重み付けしている。\n\n\n\n\n\n\nTip設計上のポイント\n\n\n\nboard_eval3 は turn の合法手だけを評価する。 本当は「自分の合法手数 − 相手の合法手数」を考慮するほうが望ましい。 発展課題として、board_eval3 を turn と change_turn(turn) の両方について計算し、差を取るように改造してみるとよい。",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>ヒューリスティック評価関数</span>"
+    ]
+  },
+  {
+    "objectID": "huristics.html#確定石の評価board_eval4",
+    "href": "huristics.html#確定石の評価board_eval4",
+    "title": "10  ヒューリスティック評価関数",
+    "section": "10.4 確定石の評価（board_eval4）",
+    "text": "10.4 確定石の評価（board_eval4）\n角を取った石、および角から連続して同じ色でつながっている石は、相手に反転されにくい。 これを確定石と呼ぶ。 ここでは簡易的に、4つの角から縦横方向に連続する同色の石を数える。\n\n10.4.1 練習28：1方向の確定石を数える\n盤面 board の (row0, col0) から (row_inc, col_inc) 方向へ、手番 turn の石が連続している数を数える関数 kakutei_scan(board, row0, col0, row_inc, col_inc, turn) を定義せよ。 ただし、戻り値は連続数そのものではなく、「連続数 × turn の値」 とする。\ndef kakutei_scan(board, row0, col0, row_inc, col_inc, turn):\n    row = row0\n    col = col0\n    length = 0\n    while 0 &lt;= row &lt; BOARD_SIZE and 0 &lt;= col &lt; BOARD_SIZE and board[row][col] == turn:\n        length += turn   # 先手なら +1、後手なら -1\n        row += row_inc\n        col += col_inc\n    return length\nこのようにすると、後で board_eval4 の中で「先手の確定石は正、後手の確定石は負」になるよう自然に積み上げられる。\n動作確認:\nboard = initial_board()\n# 初期盤面では角は空なので、(0, 0) からの確定石は 0\nassert kakutei_scan(board, 0, 0, 1, 0, BOARD_SENTE) == 0\n\n# (3, 4) は先手の石。そこから上方向 (-1, 0) には先手1個\nassert kakutei_scan(board, 3, 4, -1, 0, BOARD_SENTE) == 0   # 上に空\n# 自分自身を含めて数えるので、先手1個分の +1\n# ※ 細かい仕様（自身を含めるかどうか）は実装と合わせて確認すること\n\n\n\n\n\n\nWarning\n\n\n\nkakutei_scan は (row0, col0) 自身も turn の石である場合だけ意味のある値を返す。 角に石が無い場合は呼び出さないようにする（次の board_eval4 で確認している）。\n\n\n\n\n10.4.2 練習29：角からの確定石を評価する\n4つの角について、角に石がある場合だけ、縦横の連続石を評価する関数 board_eval4(board, omomi) を定義せよ。\ndef board_eval4(board, omomi):\n    count = 0.0\n    if board[0][0] != BOARD_EMPTY:\n        turn = board[0][0]\n        count += kakutei_scan(board, 0, 0, 1, 0, turn)   # 下方向\n        count += kakutei_scan(board, 0, 0, 0, 1, turn)   # 右方向\n    if board[7][7] != BOARD_EMPTY:\n        turn = board[7][7]\n        count += kakutei_scan(board, 7, 7, -1, 0, turn)  # 上方向\n        count += kakutei_scan(board, 7, 7, 0, -1, turn)  # 左方向\n    if board[0][7] != BOARD_EMPTY:\n        turn = board[0][7]\n        count += kakutei_scan(board, 0, 7, 1, 0, turn)   # 下方向\n        count += kakutei_scan(board, 0, 7, 0, -1, turn)  # 左方向\n    if board[7][0] != BOARD_EMPTY:\n        turn = board[7][0]\n        count += kakutei_scan(board, 7, 0, -1, 0, turn)  # 上方向\n        count += kakutei_scan(board, 7, 0, 0, 1, turn)   # 右方向\n    return count * omomi\n\n\n\n\n\n\nNote\n\n\n\n角の座標は \\((0, 0)\\), \\((0, 7)\\), \\((7, 0)\\), \\((7, 7)\\) の4つ。 各角から内側に向かう2方向（縦・横）について連続石を数えることで、辺に沿った確定石を素朴に評価している。 本来は斜め方向の伝播なども考慮すべきだが、ここでは簡易版にとどめる。",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>ヒューリスティック評価関数</span>"
+    ]
+  },
+  {
+    "objectID": "huristics.html#x打ちc打ちの評価board_eval5",
+    "href": "huristics.html#x打ちc打ちの評価board_eval5",
+    "title": "10  ヒューリスティック評価関数",
+    "section": "10.5 X打ち・C打ちの評価（board_eval5）",
+    "text": "10.5 X打ち・C打ちの評価（board_eval5）\n角の斜め隣のマス（X打ち）や、角の辺隣のマス（C打ち）は、角が空いているときに打つと相手に角を取られる原因になりやすい。\n\n10.5.1 練習30：X打ちを減点する\n盤面 board、手番 turn、重み omomi を受け取り、X打ちを減点する関数 board_eval5(board, turn, omomi) を定義せよ。\ndef board_eval5(board, turn, omomi):\n    count = 0.0\n    if board[1][1] == turn and board[0][0] == BOARD_EMPTY:\n        count += turn * -1\n    if board[1][6] == turn and board[0][7] == BOARD_EMPTY:\n        count += turn * -1\n    if board[6][1] == turn and board[7][0] == BOARD_EMPTY:\n        count += turn * -1\n    if board[6][6] == turn and board[7][7] == BOARD_EMPTY:\n        count += turn * -1\n    return count * omomi\n対象となる X の座標と角の組は次の通り。\n\n\n\nXの位置\n対応する角\n\n\n\n\n\\((1, 1)\\)\n\\((0, 0)\\)\n\n\n\\((1, 6)\\)\n\\((0, 7)\\)\n\n\n\\((6, 1)\\)\n\\((7, 0)\\)\n\n\n\\((6, 6)\\)\n\\((7, 7)\\)\n\n\n\nX の位置に turn の石があり、対応する角が空きなら、turn * -1 を加算する。 これにより、turn = BOARD_SENTE のときは負、turn = BOARD_GOTE のときは正の値が積まれる（あとで omomi（正値）を掛けるので、最終的に「先手は減点・後手は加点」となる）。\n\n\n\n\n\n\nTip発展課題\n\n\n\nC打ち（角の辺隣 \\((0, 1), (1, 0), (0, 6), (1, 7), \\ldots\\)）も同様に減点するよう拡張できる。 最終レポートで、「C打ちを減点項目に追加するとどう変わったか」を実験すると説得力のある考察になる。",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>ヒューリスティック評価関数</span>"
+    ]
+  },
+  {
+    "objectID": "huristics.html#評価関数を組み合わせる",
+    "href": "huristics.html#評価関数を組み合わせる",
+    "title": "10  ヒューリスティック評価関数",
+    "section": "10.6 評価関数を組み合わせる",
+    "text": "10.6 評価関数を組み合わせる\n\n10.6.1 練習31：eval_node() を改良する\nこれまで作成した評価関数を組み合わせて、eval_node(node, turn, count) を改良せよ。 完成版では次の方針を用いる。\ndef eval_node(node, turn, count):\n    board = node.board\n    if count &lt; 25:                  # 序盤\n        return (board_eval2(board, 3)\n                + board_eval3(board, turn, 20)\n                + board_eval4(board, 100)\n                + board_eval5(board, turn, 500))\n    elif count &lt; 40:                # 中盤\n        return (board_eval2(board, 3)\n                + board_eval3(board, turn, 40)\n                + board_eval4(board, 100))\n    elif count &lt; 60:                # 終盤前\n        return (board_eval2(board, 3)\n                + board_eval3(board, turn, 20)\n                + board_eval4(board, 100))\n    else:                           # 終盤\n        return board_eval(board)\nこれは一つの基準実装である。 より強いプログラムにするには、重み・局面の分割・評価項目を変更し、実験で比較する必要がある。\n\n\n10.6.2 練習32：評価関数の効果を確認する\n評価関数を変更する前後で、同じ初期盤面・同じ探索深さを使ってコンピュータ同士を対戦させ、結果を比較せよ。\n\n\n\n評価関数\n探索深さ\n先手石数\n後手石数\n勝者\nコメント\n\n\n\n\nboard_eval のみ\n3\n\n\n\n\n\n\nboard_eval2 を追加\n3\n\n\n\n\n\n\nboard_eval2 + board_eval4\n3\n\n\n\n\n\n\n完成版\n3\n\n\n\n\n\n\n\n確認できたら、Git でコミットしておくこと。\ngit add reversi_yourid.py test_reversi.py\ngit commit -m \"improve board evaluation (ex.26-32)\"",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>ヒューリスティック評価関数</span>"
+    ]
+  },
+  {
+    "objectID": "huristics.html#次章以降への接続",
+    "href": "huristics.html#次章以降への接続",
+    "title": "10  ヒューリスティック評価関数",
+    "section": "10.7 次章以降への接続",
+    "text": "10.7 次章以降への接続\n本章で扱った評価関数の重み（omomi）は、すべて人間の直感で決めた値である。 これを次のように自動化することができる。\n\n第10章 手動チューニング：実験を繰り返して人間が改良する（次章）。\n第11章 メタヒューリスティクス：山登り法・焼きなまし法・遺伝的アルゴリズムなどの探索アルゴリズムで重みを自動最適化する。\n第12章 機械学習：自己対戦データから評価関数そのものを学習する。\n\n本実験では、まず本章の手動の評価関数で動くプログラムを完成させ、その後の章でこれらの自動化を体験する。 それぞれの章は AI の歴史的発展（推論 → 最適化 → 学習）に対応しており、同じ問題を異なる視点で解くことの面白さを味わえるはずである。",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>ヒューリスティック評価関数</span>"
+    ]
+  },
+  {
+    "objectID": "huristics.html#まとめ",
+    "href": "huristics.html#まとめ",
+    "title": "10  ヒューリスティック評価関数",
+    "section": "10.8 まとめ",
+    "text": "10.8 まとめ\n\n評価関数はオセロの強さを決める中核である。\n位置点・可動性・確定石・X打ちなど、ゲームの知識を分けて関数化し、重み付き和で組み合わせるのが基本戦略。\n序盤・中盤・終盤で重みを変えることで、局面に応じた指針に切り替えられる。\n改良の効果は実験で確かめて、結果として記録する習慣をつける。\n手動チューニングで強い AI を作るのは限界がある。次章以降では、自動最適化や機械学習でこの限界を超える方法を学ぶ。",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>ヒューリスティック評価関数</span>"
+    ]
+  },
+  {
+    "objectID": "evaluation.html",
+    "href": "evaluation.html",
+    "title": "11  評価関数の改良と最終課題",
+    "section": "",
+    "text": "11.1 改良の方針\n本章では、これまでに完成したオセロプログラムをより強くするため、評価関数を改良する。 最終課題では、単にコードを完成させるだけでなく、どのような考えで評価関数を設計し、その結果がどう変わったかを実験データに基づいて説明することが求められる。\n評価関数の改良例を示す。\nこれらを一度にすべて入れると、何が効いたのか分かりにくい。 まず1つの改良だけを入れて比較し、効果がありそうなら次の改良を追加する、という増分的な進め方を推奨する。",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>評価関数の改良と最終課題</span>"
+    ]
+  },
+  {
+    "objectID": "evaluation.html#改良の方針",
+    "href": "evaluation.html#改良の方針",
+    "title": "11  評価関数の改良と最終課題",
+    "section": "",
+    "text": "角を取る評価をさらに大きくする。\n角が空いているときの X 打ち・C 打ちを強く減点する。\n自分の合法手数を増やし、相手の合法手数を減らす（可動性）。\n終盤では石数評価の重みを大きくする。\n空きマスが少なくなったら探索深さを動的に深くする。\n辺の安定性を評価する（辺の中央のC打ち、辺の端の固定石など）。\n手番ごとに評価の重みを変える（自分の手番か相手の手番かでバイアスを変える）。\n旧 LISP 版テキストにあった「中割り」「手止まり」のような盤面パターンを評価項目に組み込む。",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>評価関数の改良と最終課題</span>"
+    ]
+  },
+  {
+    "objectID": "evaluation.html#実験の進め方",
+    "href": "evaluation.html#実験の進め方",
+    "title": "11  評価関数の改良と最終課題",
+    "section": "11.2 実験の進め方",
+    "text": "11.2 実験の進め方\n評価関数を変更するときは、次の手順を守る。\n\n変更前のコードで対戦結果を記録する。\nGit で現在の状態をコミットする。\n評価関数を1か所変更する。\npytest でテストを実行し、ルール部分が壊れていないことを確認する。\n同じ条件で対戦させ、結果を記録する。\n良くなったか、悪くなったかを考察する。\n良ければコミットする。悪ければブランチを戻すか、結果を記録した上で別の改良を試す。\n\n最低限、次のような表を作って実験記録を残す。\n\n\n\n実験\n変更内容\n探索深さ\n先手石数\n後手石数\n勝者\nコメント\n\n\n\n\n1\n基準実装\n3\n\n\n\n\n\n\n2\n角の重みを変更\n3\n\n\n\n\n\n\n3\nX打ち減点を変更\n3\n\n\n\n\n\n\n4\n終盤判定の境界を変更\n3",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>評価関数の改良と最終課題</span>"
+    ]
+  },
+  {
+    "objectID": "evaluation.html#ルール部分のテスト",
+    "href": "evaluation.html#ルール部分のテスト",
+    "title": "11  評価関数の改良と最終課題",
+    "section": "11.3 ルール部分のテスト",
+    "text": "11.3 ルール部分のテスト\n評価関数を改良しても、オセロのルール部分を壊してはいけない。 少なくとも次の確認は毎回行う（既に test_reversi.py に書いてあれば再利用できる）。\ndef test_initial_board():\n    board = initial_board()\n    assert board_number_check(board, BOARD_SENTE) == 2\n    assert board_number_check(board, BOARD_GOTE) == 2\n\ndef test_initial_legal_moves():\n    board = initial_board()\n    moves = [\n        (row, col)\n        for row in range(BOARD_SIZE)\n        for col in range(BOARD_SIZE)\n        if board_movable(board, row, col, BOARD_SENTE)\n    ]\n    assert len(moves) == 4\n\ndef test_move_flips_stone():\n    board = initial_board()\n    board_move(board, 2, 3, BOARD_SENTE)\n    assert board[2][3] == BOARD_SENTE\n    assert board[3][3] == BOARD_SENTE\nこれらに加えて、自分が改良した評価関数自体のテスト（極端な盤面で意図通りの符号になるか、など）も書いておくとよい。",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>評価関数の改良と最終課題</span>"
+    ]
+  },
+  {
+    "objectID": "evaluation.html#最終課題",
+    "href": "evaluation.html#最終課題",
+    "title": "11  評価関数の改良と最終課題",
+    "section": "11.4 最終課題",
+    "text": "11.4 最終課題\n以下を満たす Python プログラムとレポートを提出する。\n\n11.4.1 提出プログラム\n\nreversi_yourid.py（メインプログラム）\ntest_reversi.py（テスト）\n\n要件:\n\n第6章～第10章の例題・練習で作成した関数を含むこと。\n自作の評価関数・補助関数には、何を評価しているか・どのような意図で使うかが分かるコメントを付けること。\npython reversi_yourid.py で人間対コンピュータ・コンピュータ対コンピュータのいずれかが実行できること。\npython -m pytest がエラーなく通ること。\n\n\n\n11.4.2 レポートに含める内容\n\nプログラムの構成（どのファイルにどの関数があるか、関数の依存関係）\n実装した探索法（minimax / αβ）の説明\n評価関数の設計意図（各 board_eval2 ～ board_eval5 を何のために入れているか、重みをどう決めたか）\n工夫した点（独自の改良、実験のしかたなど）\n実験条件と対戦結果（先述の表）\n結果に対する考察\nGit を使った開発履歴の説明（git log --oneline を貼る）\n感想\n\n\n\n11.4.3 評価の観点\n\n単に勝敗だけでなく、評価関数の設計意図が説明されているか。\n実験の妥当性（同じ条件で比較しているか、対戦が一回限りで結論づけていないか）。\nコードの読みやすさ（命名、分割、コメント）。\nテストの有無と内容。\nGit の使い方（粒度、コミットメッセージ）。",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>評価関数の改良と最終課題</span>"
+    ]
+  },
+  {
+    "objectID": "evaluation.html#改良アイデアの種",
+    "href": "evaluation.html#改良アイデアの種",
+    "title": "11  評価関数の改良と最終課題",
+    "section": "11.5 改良アイデアの種",
+    "text": "11.5 改良アイデアの種\n時間に余裕があれば、次のような発展も検討してほしい。\n\n可動性差の評価：board_eval3 を「自分の合法手の点数」だけでなく「相手の合法手の点数を引く」形に拡張する。\n辺の安定石：kakutei_scan を辺方向に拡張し、辺全体の安定石を評価する。\n空きマス数による境界：count &lt; 25 などの手数による境界を、実際の空きマス数で判定するよう変更する。\niterative deepening：時間予算を決めて、深さ1, 2, 3, … と順に深くしていき、時間切れになったら最後に求まった手を返す。\nmove ordering：expand_node() で生成した子節点を、簡易な評価で並べ替えてから αβ 法に渡すと枝刈り効率が上がる。\n\nこれらは旧 LISP 版時代から多くの先輩が試してきた工夫である。 自分が試したことと、その結果を残すことに価値がある。\n\n\n\n\n\n\nNote次章への接続：手動チューニングの限界\n\n\n\n本章では、人間が試行錯誤して重みを変える形で評価関数を改良した。 しかし、重みの組み合わせは膨大であり、人間がすべてを試すのは現実的ではない。 第11章では、この重み探索を自動化するメタヒューリスティクス（山登り法・焼きなまし法・GA）を導入する。 さらに第12章では、評価関数自体をデータから学ぶ機械学習的アプローチを扱う。",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>評価関数の改良と最終課題</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html",
+    "href": "optimization.html",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "",
+    "text": "12.1 本章の到達目標\n第9章で実装した評価関数 eval_node() には、board_eval2〜board_eval5 の重み（omomi）と BOARD_POINT という多くのパラメータが登場した。 これらの値はすべて人間が直感で決めたものであり、本当に最適とは限らない。\n本章では、対戦の勝率を「適合度（fitness）」として、評価関数の重みを自動的に最適化することを試みる。 これは AI の歴史で言えば「人間が知識を作り込む」段階から「最適化アルゴリズムが知識を獲得する」段階への移行であり、本実験ではメタヒューリスティクスと呼ばれる一群の探索アルゴリズムを用いる。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html#本章の到達目標",
+    "href": "optimization.html#本章の到達目標",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "",
+    "text": "評価関数の重みを最適化対象としたブラックボックス最適化問題として定式化できる。\n山登り法、焼きなまし法、遺伝的アルゴリズムを実装し、同じ問題に対する挙動を比較できる。\n各アルゴリズムの探索の特性（局所性／大域性、収束速度、計算予算）を実験的に比較できる。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html#問題の定式化",
+    "href": "optimization.html#問題の定式化",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "12.2 問題の定式化",
+    "text": "12.2 問題の定式化\n評価関数の重みベクトルを次のように書く。\n\\[\n\\mathbf{w} = (w_2, w_3, w_4, w_5)\n\\]\nここで \\(w_2, w_3, w_4, w_5\\) はそれぞれ board_eval2〜board_eval5 の omomi に相当する。 求めたいのは、\n\\[\n\\mathbf{w}^* = \\arg\\max_{\\mathbf{w}} \\; \\text{fitness}(\\mathbf{w})\n\\]\nである。 ここで \\(\\text{fitness}(\\mathbf{w})\\) は、重み \\(\\mathbf{w}\\) を持つ AI をベースライン AI（人間が決めた基準重みを持つ AI）と複数回対戦させたときの勝率などとする。\n\n\n\n\n\n\nWarning評価のコストに注意\n\n\n\n\\(\\text{fitness}(\\mathbf{w})\\) を 1 回計算するには、ゲームを N 回プレイする必要がある。 1 ゲームに数秒かかるため、評価呼び出し回数を抑える工夫（探索深さを浅くする、\\(N\\) を小さく取る、4×4 盤に縮小する）が現実的になる。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html#共通フレームワーク",
+    "href": "optimization.html#共通フレームワーク",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "12.3 共通フレームワーク",
+    "text": "12.3 共通フレームワーク\n\n12.3.1 例題：パラメタライズした評価関数\neval_node() を、重みベクトルを引数にとるファクトリ関数として書き直す。\ndef make_eval_node(weights):\n    \"\"\"重みベクトルから eval_node 関数を作成して返す。\"\"\"\n    w2, w3, w4, w5 = weights\n\n    def eval_node(node, turn, count):\n        board = node.board\n        if count &lt; 25:\n            return (board_eval2(board, w2)\n                    + board_eval3(board, turn, w3)\n                    + board_eval4(board, w4)\n                    + board_eval5(board, turn, w5))\n        elif count &lt; 40:\n            return (board_eval2(board, w2)\n                    + board_eval3(board, turn, w3 * 2)\n                    + board_eval4(board, w4))\n        elif count &lt; 60:\n            return (board_eval2(board, w2)\n                    + board_eval3(board, turn, w3)\n                    + board_eval4(board, w4))\n        else:\n            return board_eval(board)\n\n    return eval_node\nreversi_yourid.py の eval_node を直接書き換えるのではなく、モジュールグローバルとして登録する形にすると差し替えが楽になる。\n# モジュール全体で使う「現在の評価関数」を保持する\n_current_eval_node = None\n\ndef set_eval_node(fn):\n    global _current_eval_node\n    _current_eval_node = fn\n\ndef eval_node(node, turn, count):\n    return _current_eval_node(node, turn, count)\n\n\n12.3.2 練習33：適合度関数を実装する\n重みベクトル weights と、対戦相手のベースライン重み baseline を受け取り、n_games 回対戦して勝利数を返す関数 fitness(weights, baseline, n_games, depth) を定義せよ。\ndef play_one_game(eval_a, eval_b, depth):\n    \"\"\"eval_a を先手、eval_b を後手として 1 ゲーム対戦し、勝者を返す。\"\"\"\n    ...\n    return winner   # BOARD_SENTE / BOARD_GOTE / 0(=draw)\n\n\ndef fitness(weights, baseline, n_games, depth):\n    eval_w = make_eval_node(weights)\n    eval_b = make_eval_node(baseline)\n    wins = 0\n    # 公平のため、先手・後手を交代しながら半分ずつ対戦する\n    for i in range(n_games):\n        if i % 2 == 0:\n            winner = play_one_game(eval_w, eval_b, depth)\n            if winner == BOARD_SENTE:\n                wins += 1\n        else:\n            winner = play_one_game(eval_b, eval_w, depth)\n            if winner == BOARD_GOTE:\n                wins += 1\n    return wins\n\n\n\n\n\n\nTip注意：minimax/αβ は決定的\n\n\n\n同じ重みで同じ初期盤面なら、minimax / αβ は常に同じ手を指す。 そのため対戦結果も毎回同じになり、n_games を増やしても情報が増えない。 これを避けるには、\n\n各ゲームの最初の数手をランダムに打つ。\n子節点の探索順序にランダム性を入れる（random.shuffle(children) を expand_node の末尾に入れる）。\n評価値に小さな乱数を加えて同点を崩す。\n\nのいずれかを採用する。本実験ではいずれの方法でもよい。\n\n\n\n\n12.3.3 探索コスト削減のヒント\n\n深さは浅く：depth = 2 でも、評価関数の差は十分に勝敗に現れる。\n盤面を小さく：BOARD_SIZE = 6 に縮小するとゲームが速い。\n対戦数は控えめに：練習段階では n_games = 4〜8 程度から始める。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html#山登り法hill-climbing",
+    "href": "optimization.html#山登り法hill-climbing",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "12.4 山登り法（Hill Climbing）",
+    "text": "12.4 山登り法（Hill Climbing）\n最も素朴な局所探索アルゴリズムである。 現在の解の近傍をランダムに 1 つ生成し、適合度が改善するなら採用、そうでなければ捨てる、を繰り返す。\n入力: 初期解 w0、最大反復回数 T、ステップサイズ σ\n出力: 最終解\n\nw ← w0\nf ← fitness(w)\nfor t in 1..T:\n    w' ← w + N(0, σ²)            # ガウス雑音による近傍生成\n    f' ← fitness(w')\n    if f' &gt; f:\n        w ← w'\n        f ← f'\nreturn w\n\n12.4.1 練習34：山登り法を実装する\nimport random\n\ndef hill_climbing(initial_weights, max_iter, sigma, baseline, n_games, depth):\n    current = list(initial_weights)\n    current_fitness = fitness(current, baseline, n_games, depth)\n    history = [(0, current[:], current_fitness)]\n\n    for t in range(1, max_iter + 1):\n        neighbor = [w + random.gauss(0, sigma) for w in current]\n        neighbor = [max(0.0, w) for w in neighbor]   # 重みは非負に制限\n        neighbor_fitness = fitness(neighbor, baseline, n_games, depth)\n        if neighbor_fitness &gt; current_fitness:\n            current = neighbor\n            current_fitness = neighbor_fitness\n        history.append((t, current[:], current_fitness))\n\n    return current, history\n\n\n12.4.2 練習35：1 次元から動作確認\n最初は次元を絞って、確実に挙動を確認する。\n# まず w4 (確定石) だけを動かす\ndef fitness_w4(w4, baseline, n_games, depth):\n    weights = list(baseline)\n    weights[2] = w4   # baseline の他の重みは固定、w4 だけ可変\n    return fitness(weights, baseline, n_games, depth)\nw4 を 0, 50, 100, 200, 500, 1000 と振って、適合度（勝利数）をプロットせよ。 山型・単調な形・ぎざぎざのいずれが見られるかを観察する。\n\n\n12.4.3 練習36：4 次元での山登り\nすべての重みを動かす本格的な山登り法を実行し、history の適合度の推移をプロットせよ。\n考察:\n\n局所最適に陥った（途中で適合度の改善が止まった）か。\nステップサイズ \\(\\sigma\\) を変えると挙動はどう変わるか。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html#焼きなまし法simulated-annealing",
+    "href": "optimization.html#焼きなまし法simulated-annealing",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "12.5 焼きなまし法（Simulated Annealing）",
+    "text": "12.5 焼きなまし法（Simulated Annealing）\n山登り法は局所最適に陥る欠点がある。 焼きなまし法は、改善しなくても確率的に受け入れることで局所解を脱出できる。 受け入れ確率は「温度」 \\(T\\) により制御し、\\(T\\) は反復とともに小さくなる（冷却）。\n受け入れ確率: P = exp((f' - f) / T)\nただし f' &gt; f なら必ず採用、 f' &lt;= f なら確率 P で採用\n\n12.5.1 練習37：焼きなまし法を実装する\nimport math\n\ndef simulated_annealing(initial_weights, max_iter, sigma, T0, T_end,\n                        baseline, n_games, depth):\n    current = list(initial_weights)\n    current_fitness = fitness(current, baseline, n_games, depth)\n    best, best_fitness = current[:], current_fitness\n    history = [(0, current[:], current_fitness)]\n\n    for t in range(1, max_iter + 1):\n        T = T0 * (T_end / T0) ** (t / max_iter)   # 指数冷却\n        neighbor = [max(0.0, w + random.gauss(0, sigma)) for w in current]\n        nf = fitness(neighbor, baseline, n_games, depth)\n        if nf &gt; current_fitness:\n            current, current_fitness = neighbor, nf\n        else:\n            if random.random() &lt; math.exp((nf - current_fitness) / max(T, 1e-9)):\n                current, current_fitness = neighbor, nf\n        if current_fitness &gt; best_fitness:\n            best, best_fitness = current[:], current_fitness\n        history.append((t, current[:], current_fitness))\n\n    return best, history\n\n\n12.5.2 練習38：温度スケジュールの効果\nT0、T_end を変えて結果を比較せよ。 T0 が大きすぎるとランダムウォーク、T0 が小さすぎると山登り法と同じ挙動になる。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html#遺伝的アルゴリズムgenetic-algorithm-ga",
+    "href": "optimization.html#遺伝的アルゴリズムgenetic-algorithm-ga",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "12.6 遺伝的アルゴリズム（Genetic Algorithm, GA）",
+    "text": "12.6 遺伝的アルゴリズム（Genetic Algorithm, GA）\n集団ベースの大域探索手法である。 複数の重みベクトル（個体）を保持し、適合度の高いものを選んで交叉と突然変異で次世代を作る。\n入力: 個体数 N、世代数 G、交叉確率 pc、突然変異確率 pm\n出力: 最終世代の最良個体\n\n集団 P ← ランダムに N 個の個体を生成\nfor g in 1..G:\n    各個体の適合度を計算\n    新集団 P' ← []\n    while |P'| &lt; N:\n        親 a, b ← トーナメント選択(P)\n        子 c, d ← 交叉(a, b) (確率 pc)\n        c, d ← 突然変異(c, d) (確率 pm)\n        P' に c, d を追加\n    P ← P'\nreturn Pの最良個体\n\n12.6.1 練習39：トーナメント選択\ndef tournament_select(population, fitnesses, k=3):\n    \"\"\"k 個をランダムに選び、その中で最良の個体を返す\"\"\"\n    candidates = random.sample(range(len(population)), k)\n    best = max(candidates, key=lambda i: fitnesses[i])\n    return population[best]\n\n\n12.6.2 練習40：交叉と突然変異\ndef crossover(a, b):\n    \"\"\"一様交叉：各次元について確率 0.5 で親を入れ替える\"\"\"\n    c = [a[i] if random.random() &lt; 0.5 else b[i] for i in range(len(a))]\n    d = [b[i] if random.random() &lt; 0.5 else a[i] for i in range(len(a))]\n    return c, d\n\n\ndef mutate(individual, sigma, pm):\n    \"\"\"各次元に確率 pm でガウス雑音を加える\"\"\"\n    return [\n        max(0.0, w + random.gauss(0, sigma)) if random.random() &lt; pm else w\n        for w in individual\n    ]\n\n\n12.6.3 練習41：GA 本体\ndef genetic_algorithm(pop_size, generations, baseline, n_games, depth,\n                      sigma=20.0, pc=0.8, pm=0.2):\n    # 初期集団：baseline まわりの乱数で初期化\n    population = [\n        [max(0.0, w + random.gauss(0, sigma * 2)) for w in baseline]\n        for _ in range(pop_size)\n    ]\n    history = []\n\n    for g in range(generations):\n        fitnesses = [fitness(ind, baseline, n_games, depth) for ind in population]\n        best_idx = max(range(pop_size), key=lambda i: fitnesses[i])\n        history.append((g, population[best_idx][:], fitnesses[best_idx]))\n\n        new_pop = [population[best_idx][:]]   # エリート保存\n        while len(new_pop) &lt; pop_size:\n            a = tournament_select(population, fitnesses)\n            b = tournament_select(population, fitnesses)\n            if random.random() &lt; pc:\n                c, d = crossover(a, b)\n            else:\n                c, d = a[:], b[:]\n            c = mutate(c, sigma, pm)\n            d = mutate(d, sigma, pm)\n            new_pop.append(c)\n            if len(new_pop) &lt; pop_size:\n                new_pop.append(d)\n        population = new_pop\n\n    fitnesses = [fitness(ind, baseline, n_games, depth) for ind in population]\n    best_idx = max(range(pop_size), key=lambda i: fitnesses[i])\n    return population[best_idx], history\n\n\n\n\n\n\nTip計算予算の見積り\n\n\n\n1 世代の評価コストは「個体数 × 1 個体の対戦数」回のゲーム実行になる。 個体数 10、世代数 10、1 個体あたり 4 ゲームなら、合計 400 ゲーム。 1 ゲームが 2 秒なら 800 秒（約 13 分）。 最初は個体数 6、世代数 6、対戦数 2 程度で動作確認するとよい。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html#アルゴリズム比較実験",
+    "href": "optimization.html#アルゴリズム比較実験",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "12.7 アルゴリズム比較実験",
+    "text": "12.7 アルゴリズム比較実験\n\n12.7.1 練習42：適合度推移の比較\n山登り法、焼きなまし法、GA を同じ評価予算（同じ総ゲーム数）で実行し、最終的な最良適合度をそれぞれ記録する。 history から適合度の推移をプロットすると、各アルゴリズムの特性が見える。\n\n\n\nアルゴリズム\n評価予算（ゲーム数）\n最終最良適合度\n最良重み\n\n\n\n\nHill Climbing\n200\n\n\n\n\nSimulated Annealing\n200\n\n\n\n\nGenetic Algorithm\n200\n\n\n\n\n\n\n\n12.7.2 練習43：考察\n次の点を考察せよ。\n\n同じ評価予算で、どのアルゴリズムが最も良い解を見つけたか。\n局所最適に陥りやすいのはどれか。\n集団ベース（GA）の利点と欠点。\n評価のノイズ（ゲームの確率性）がアルゴリズムに与える影響。\nベースラインに勝つ重みは見つかったか。見つかった場合、それは過学習（特定の対戦相手だけに勝つ）になっていないか。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html#発展他のアルゴリズム",
+    "href": "optimization.html#発展他のアルゴリズム",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "12.8 発展：他のアルゴリズム",
+    "text": "12.8 発展：他のアルゴリズム\n時間に余裕があれば、次のアルゴリズムも比較対象にできる。\n\nPSO（Particle Swarm Optimization）：粒子の速度を「個人最良」「群れ最良」へ向けて更新する。連続値最適化に向く。\nCMA-ES：分布の共分散行列を適応的に更新する高性能な進化戦略。pip install cma で使える。\nACO（Ant Colony Optimization）：本来は組合せ最適化向けの手法。本問題に適用するなら、評価項目（特徴）の部分集合を蟻に選ばせる「特徴選択型 ACO」が自然である。board_eval2〜board_eval5 のうちどれを使うかを決める問題に置き換える。\n\n\n12.8.1 ACO の特徴選択への応用（オプション）\n特徴の集合 F = {f2, f3, f4, f5, ...}\n各特徴 f に対するフェロモン量 τ(f)\n各蟻は確率 P(f) ∝ τ(f)^α で特徴を選ぶ\n選んだ部分集合で AI を構成し、勝利数を測る\n良かった蟻のフェロモンを増やす（更新）\n悪かった蟻のフェロモンは蒸発で減る\nこのように、ACO は本来「離散的な選択を多数組み合わせる」問題に向いた手法であることを実装を通じて体験できる。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "optimization.html#まとめ",
+    "href": "optimization.html#まとめ",
+    "title": "12  メタヒューリスティクスによる評価関数の最適化",
+    "section": "12.9 まとめ",
+    "text": "12.9 まとめ\n\n評価関数の重みを自動的にチューニングする最適化問題として定式化することで、人間が決めた重みを超えられる可能性がある。\n山登り法はベースラインだが局所最適に弱い。焼きなまし法は確率的に脱出できる。GA は集団で同時に複数の領域を探索できる。\nどのアルゴリズムも評価コストが高い（毎回ゲームを走らせる）ため、評価予算と探索効率のバランスが重要。\nメタヒューリスティクスは「人間の知識」と「機械学習」の中間に位置する考え方であり、両者を結ぶ重要な技法である。",
+    "crumbs": [
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>メタヒューリスティクスによる評価関数の最適化</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html",
+    "href": "learning.html",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "",
+    "text": "13.1 本章の到達目標\n第11章では、評価関数の重みをメタヒューリスティクスで最適化した。 本章ではさらに踏み込み、評価関数そのものをデータから学習するアプローチを紹介する。 これは現代の AI 研究の中心となっている機械学習（machine learning） の入門にもなる。\n本章は発展課題である。 本実験の必修範囲を完成させ、pytest で動作を確認してから取り組むこと。",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html#本章の到達目標",
+    "href": "learning.html#本章の到達目標",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "",
+    "text": "自己対戦で学習用データセットを作成できる。\n線形回帰またはロジスティック回帰で局面 → 勝敗の関係を学習できる。\n学習した重みを eval_node() に組み込み、対戦で性能を確認できる。",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html#学習用データの準備",
+    "href": "learning.html#学習用データの準備",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "13.2 学習用データの準備",
+    "text": "13.2 学習用データの準備\n\n13.2.1 自己対戦によるデータ収集\n自己対戦の各局面に対し、その局面の特徴量と最終的な勝敗を組にして記録する。\nimport csv\n\ndef collect_self_play(n_games, depth, output_path):\n    \"\"\"自己対戦を行い、(features, winner) のペアを CSV に保存する。\"\"\"\n    rows = []\n    for g in range(n_games):\n        board = initial_board()\n        turn = BOARD_SENTE\n        count = 1\n        history = []   # この対戦中の (features, turn) の系列\n\n        while True:\n            state = board_state(board, turn)\n            if isinstance(state, float):\n                break\n            if state == \"pass\":\n                turn = change_turn(turn)\n                continue\n\n            features = extract_features(board)   # 後述\n            history.append(features)\n\n            n = Node(board, turn, 0, 0, 0.0)\n            best = alpha_beta(n, turn, count, depth, None, None)\n            board_move(board, best.row, best.col, turn)\n            turn = change_turn(turn)\n            count += 1\n\n        # 勝者を全局面のラベルとして付与\n        sente = board_number_check(board, BOARD_SENTE)\n        gote = board_number_check(board, BOARD_GOTE)\n        if sente &gt; gote:\n            label = 1\n        elif sente &lt; gote:\n            label = -1\n        else:\n            label = 0\n\n        for feat in history:\n            rows.append(feat + [label])\n\n    with open(output_path, \"w\", newline=\"\") as f:\n        csv.writer(f).writerows(rows)\n\n\n13.2.2 練習44：特徴量の設計\n局面 board から数値ベクトルを抽出する関数 extract_features(board) を定義せよ。 最初は素朴に、第9章で定義した評価項目をそのまま並べるとよい。\ndef extract_features(board):\n    return [\n        board_eval(board),\n        board_eval2(board, 1),\n        board_eval3(board, BOARD_SENTE, 1) - board_eval3(board, BOARD_GOTE, 1),\n        board_eval4(board, 1),\n        board_eval5(board, BOARD_SENTE, 1) + board_eval5(board, BOARD_GOTE, 1),\n    ]\nここで返るリストの長さが特徴量の次元になる。 発展課題として、自分が新たに思いついた特徴量（たとえば「角の所有数の差」「辺の安定石の数」など）を追加して次元を増やせる。",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html#線形回帰による評価関数",
+    "href": "learning.html#線形回帰による評価関数",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "13.3 線形回帰による評価関数",
+    "text": "13.3 線形回帰による評価関数\n最も単純なモデルは線形回帰である。 特徴量ベクトル \\(\\mathbf{x}\\)、重みベクトル \\(\\boldsymbol{\\beta}\\)、バイアス \\(b\\) について\n\\[\n\\hat{y} = \\boldsymbol{\\beta}^\\top \\mathbf{x} + b\n\\]\nを「先手の勝ち \\(1\\)、後手の勝ち \\(-1\\)、引き分け \\(0\\)」のラベルにフィットさせる。\n\n13.3.1 練習45：scikit-learn で学習する\nimport numpy as np\nfrom sklearn.linear_model import LinearRegression\n\ndata = np.loadtxt(\"self_play.csv\", delimiter=\",\")\nX = data[:, :-1]\ny = data[:, -1]\n\nmodel = LinearRegression()\nmodel.fit(X, y)\nprint(\"coefficients:\", model.coef_)\nprint(\"intercept:   \", model.intercept_)\n学習された係数 model.coef_ は、特徴量の各次元に対する重みである。\n\n\n13.3.2 練習46：学習結果を eval_node() に組み込む\nclass LearnedEvaluator:\n    def __init__(self, coef, intercept):\n        self.coef = coef\n        self.intercept = intercept\n\n    def __call__(self, node, turn, count):\n        x = extract_features(node.board)\n        return float(np.dot(self.coef, x) + self.intercept)\n\n\n# 使用例\nlearned = LearnedEvaluator(model.coef_, model.intercept_)\nset_eval_node(learned)   # 第11章で導入した差し替え機構を使う\n第11章で導入した set_eval_node 機構をそのまま流用できる。\n\n\n13.3.3 練習47：手動評価関数との対戦\n学習した評価関数と、第9章の手動評価関数 eval_node を対戦させ、勝率を比較せよ。 データ量・特徴量・モデルの違いで結果がどう変わるかを観察する。",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html#ロジスティック回帰",
+    "href": "learning.html#ロジスティック回帰",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "13.4 ロジスティック回帰",
+    "text": "13.4 ロジスティック回帰\n線形回帰は連続値を予測するモデルだが、勝ち負けは本来分類の問題である。 ロジスティック回帰を使うと、予測値を確率として解釈できる。\nfrom sklearn.linear_model import LogisticRegression\n\n# 引き分けは除き、勝ち(1) と 負け(-1) の二値に絞る\nmask = y != 0\nX2, y2 = X[mask], (y[mask] &gt; 0).astype(int)\n\nmodel = LogisticRegression(max_iter=1000)\nmodel.fit(X2, y2)\npredict_proba で得られる「先手勝率」をそのまま評価値として使える。",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html#小規模ニューラルネットワーク",
+    "href": "learning.html#小規模ニューラルネットワーク",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "13.5 小規模ニューラルネットワーク",
+    "text": "13.5 小規模ニューラルネットワーク\n特徴量に非線形な関係があると思える場合は、多層パーセプトロン（MLP） を使うとよい。\nfrom sklearn.neural_network import MLPRegressor\n\nmodel = MLPRegressor(hidden_layer_sizes=(16, 8), max_iter=2000, random_state=0)\nmodel.fit(X, y)\nPyTorch を使うとさらに柔軟なモデル設計ができるが、本実験の範囲では scikit-learn の MLP で十分である。",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html#学習データの注意点",
+    "href": "learning.html#学習データの注意点",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "13.6 学習データの注意点",
+    "text": "13.6 学習データの注意点\n\n13.6.1 データの偏り\n自己対戦データは、今の AI の打ち手分布に強く依存している。 そのため、学習で得られる評価関数も「現在の AI が好む局面に最適化された」ものになる。 本来未知の局面（たとえば人間との対戦で出てくる局面）には弱いままであることがある。\nこれを和らげる方法として、\n\n異なる重みの AI を複数用意し、それらの組み合わせで自己対戦する。\n序盤の数手をランダムにすることで、棋譜の多様性を増やす。\n公開棋譜（オセロのプロ棋譜など）を学習に混ぜる。\n\nなどが考えられる。\n\n\n13.6.2 過学習\n特徴量の次元やモデルが大きすぎると、学習データの「ノイズ」まで覚えてしまい未知データで弱くなる。 これを過学習（overfitting） と呼ぶ。 対策としては、\n\n学習データ・検証データの分割。\n正則化（Ridge、Lasso、LogisticRegression(C=...) など）。\nモデルの規模を小さくする。\n\nがある。本実験では学習データを小さく取らざるを得ないので、まずは少ない特徴量から始めるのが安全である。",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html#発展強化学習",
+    "href": "learning.html#発展強化学習",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "13.7 発展：強化学習",
+    "text": "13.7 発展：強化学習\nオセロは状態と行動が明確に定義されているため、強化学習の題材としても扱いやすい。\n\nTD 学習：「現在の局面の評価」と「1 手進めた後の局面の評価」が一致するように、評価関数を逐次更新する。\nAlphaZero 流のセルフプレイ：方策ネットと価値ネットを同時に学習し、モンテカルロ木探索と組み合わせる。\n\nこれらは本実験の必修範囲を大きく超える。 興味のある学生は卒業研究や個人プロジェクトとして取り組むことを推奨する。",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html#レポートに含める内容学習を選択した場合",
+    "href": "learning.html#レポートに含める内容学習を選択した場合",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "13.8 レポートに含める内容（学習を選択した場合）",
+    "text": "13.8 レポートに含める内容（学習を選択した場合）\n\n使用した特徴量の説明\nデータ収集の方法（自己対戦の重み、対戦数、深さ）\n用いたモデル（線形回帰／ロジスティック回帰／MLP など）\n学習結果（係数、損失、検証スコア）\n学習した評価関数 vs 手動評価関数の対戦結果\n過学習・データの偏りなどに対して行った対策\n第11章のメタヒューリスティクス的アプローチとの比較",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "learning.html#まとめ",
+    "href": "learning.html#まとめ",
+    "title": "13  発展：機械学習による評価関数の構築",
+    "section": "13.9 まとめ",
+    "text": "13.9 まとめ\n\n評価関数をデータから学習する場合、自己対戦で局面と勝敗のデータを集め、線形回帰や MLP で勝敗を予測する形に持ち込む。\nメタヒューリスティクスとは異なり、特徴量の設計と過学習・データの偏りへの気配りが必要になる。\n強化学習はさらに高度だが、本実験の枠組み（盤面表現・合法手判定・木探索）はそのまま土台として使える。",
+    "crumbs": [
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>発展：機械学習による評価関数の構築</span>"
+    ]
+  },
+  {
+    "objectID": "network.html",
+    "href": "network.html",
+    "title": "14  対戦実験と GUI",
+    "section": "",
+    "text": "14.1 CUI での実行\n旧 LISP 版テキストでは、C 言語のクライアントと LISP の思考プログラムをファイル経由で接続し、ロックファイルで排他制御を行いながら対戦していた。 これは、当時 LISP では GUI を扱いにくかった事情と、複数言語のシステムを協調させる演習の意味があった。\n2026 年度の本実験では、Python でオセロ本体と思考部分を同じプログラムとして実装するため、旧版の C/LISP 間通信、LISP のコンパイル、AI.c の作成は扱わない。 代わりに、Python で実装した reversi_yourid.py を使った対戦実験のやり方と、付属の GUI 対戦ツール reversi-gui.py の使い方を紹介する。\nreversi_yourid.py の末尾には、直接実行されたときだけゲームを開始する処理を書く。\nこの例では、先手も後手もコンピュータが担当し、探索深さ3で実行される。 人間が先手、コンピュータが後手を担当する場合は、次のように変更する。\nターミナルで実行する。",
+    "crumbs": [
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>対戦実験と GUI</span>"
+    ]
+  },
+  {
+    "objectID": "network.html#cui-での実行",
+    "href": "network.html#cui-での実行",
+    "title": "14  対戦実験と GUI",
+    "section": "",
+    "text": "if __name__ == \"__main__\":\n    othello(BOARD_EMPTY, 3)\n\nif __name__ == \"__main__\":\n    othello(BOARD_GOTE, 5)\n\npython reversi_yourid.py",
+    "crumbs": [
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>対戦実験と GUI</span>"
+    ]
+  },
+  {
+    "objectID": "network.html#対戦ログの保存",
+    "href": "network.html#対戦ログの保存",
+    "title": "14  対戦実験と GUI",
+    "section": "14.2 対戦ログの保存",
+    "text": "14.2 対戦ログの保存\n対戦結果をレポートに使うため、実行結果をファイルに保存する。\npython reversi_yourid.py &gt; log_depth3.txt\n人間が着手する場合は対話的に動くため、画面を見ながら必要な部分を記録してよい。 コンピュータ同士の対戦では、ログを保存しておくと後で比較しやすい。",
+    "crumbs": [
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>対戦実験と GUI</span>"
+    ]
+  },
+  {
+    "objectID": "network.html#条件を変えた比較",
+    "href": "network.html#条件を変えた比較",
+    "title": "14  対戦実験と GUI",
+    "section": "14.3 条件を変えた比較",
+    "text": "14.3 条件を変えた比較\n評価関数や探索深さを変更するときは、条件を明確にして比較する。\nothello(BOARD_EMPTY, 2)\nothello(BOARD_EMPTY, 3)\nothello(BOARD_EMPTY, 4)\n\n\n\n\n\n\nNote\n\n\n\n探索深さを大きくすると必ず強くなるとは限らない。 評価関数が不適切な場合、深く読んでも誤った局面を高く評価してしまうことがある。 評価関数と探索深さは組み合わせて評価する必要がある。",
+    "crumbs": [
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>対戦実験と GUI</span>"
+    ]
+  },
+  {
+    "objectID": "network.html#gui-による対戦reversi-gui.py",
+    "href": "network.html#gui-による対戦reversi-gui.py",
+    "title": "14  対戦実験と GUI",
+    "section": "14.4 GUI による対戦：reversi-gui.py",
+    "text": "14.4 GUI による対戦：reversi-gui.py\ncodes/reversi-gui.py には、pygame を使ったオセロの GUI が用意されている。 人間対 AI、人間対人間、AI 対 AI の3通りで遊べる。\n\n14.4.1 起動方法\nreversi-gui.py は、同じディレクトリにある reversi.py を import して使う。 学生が改良した reversi_yourid.py で動かすには、いくつか方法がある。\n\nシンボリックリンクを貼って reversi.py として読ませる。\nln -s reversi_yourid.py reversi.py\npython reversi-gui.py\nreversi-gui.py の冒頭の import reversi as rv を import reversi_yourid as rv に書き換える。\n\n\n\n\n\n\n\nTipDev Container での pygame 表示\n\n\n\nDocker コンテナ内で pygame のウィンドウを表示するには、X サーバや WSLg、もしくは VSCode の Remote Display 拡張のような仕組みが必要になる。 表示できない環境では、CUI 版（reversi_yourid.py）で動作確認してから、ホストOS上で GUI を起動する形でも構わない。\n\n\n\n\n14.4.2 操作\n\n起動すると、先手と後手をそれぞれ「HUMAN」「AI」のどちらにするかを選ぶ画面が表示される。\nボタンを押して切り替え、START を押すとゲーム開始。\n人間の番では、ボードのマスをクリックして石を置く。\nAI の番では、自動で alpha_beta を呼んで手を決める。\nゲームが終わると、勝敗とスコアが下部に表示される。\n\n\n\n14.4.3 内部構造\nreversi-gui.py は、本書で実装してきた次の関数をそのまま使っている。\n\nrv.initial_board()、rv.board_movable()、rv.board_move()：ルール部分。\nrv.board_state()、rv.board_number_check()：終局判定とスコア。\nrv.Node、rv.alpha_beta()：思考部分。\n\nつまり、本書で作る関数のインタフェース（引数と戻り値）を保っている限り、改良した評価関数や探索手法でそのまま GUI 対戦できる。 最終課題で自分の AI を強化したら、ぜひ GUI 上で人間と対戦してみてほしい。",
+    "crumbs": [
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>対戦実験と GUI</span>"
+    ]
+  },
+  {
+    "objectID": "network.html#git-で実験を管理する",
+    "href": "network.html#git-で実験を管理する",
+    "title": "14  対戦実験と GUI",
+    "section": "14.5 Git で実験を管理する",
+    "text": "14.5 Git で実験を管理する\n評価関数を試すときは、変更ごとにコミットしておく。\ngit status\ngit add reversi_yourid.py\ngit commit -m \"adjust corner weights\"\nうまくいかなかった変更も、結果を記録しておくとレポートで説明しやすい。 不要になった実験コードを残す場合は、関数名やコメントで目的が分かるようにする。\nブランチを使うと、実験ごとに枝分かれを作って後で比較できる。\ngit switch -c experiment-stronger-corner    # 新しいブランチで実験\n# ... コードを変更 ...\ngit commit -m \"increase corner weight to 200\"\n# 良ければ main にマージ、悪ければブランチを破棄",
+    "crumbs": [
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>対戦実験と GUI</span>"
+    ]
+  },
+  {
+    "objectID": "network.html#提出前の確認",
+    "href": "network.html#提出前の確認",
+    "title": "14  対戦実験と GUI",
+    "section": "14.6 提出前の確認",
+    "text": "14.6 提出前の確認\n提出前に次を確認する。\n\npython reversi_yourid.py でエラーなく実行できる。\n先手・後手・コンピュータ同士のいずれかで最後まで対戦できる。\npython -m pytest がエラーなく通る。\n最終的に使っている評価関数がレポートで説明されている。\nGit のコミット履歴から、段階的に開発したことが分かる。",
+    "crumbs": [
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>対戦実験と GUI</span>"
+    ]
+  },
+  {
+    "objectID": "network.html#発展外部対戦サーバとの接続",
+    "href": "network.html#発展外部対戦サーバとの接続",
+    "title": "14  対戦実験と GUI",
+    "section": "14.7 発展：外部対戦サーバとの接続",
+    "text": "14.7 発展：外部対戦サーバとの接続\n外部の対戦サーバや自動採点器に接続する場合は、授業で指定された入出力仕様に合わせて、reversi_yourid.py の上に薄いインタフェース層を追加する。 本書で作成した合法手判定・盤面更新・探索・評価関数はそのまま再利用できる。\n旧 LISP 版で扱われていたファイル経由のプロトコル（/tmp/ban.iXXXXX.saki などのデータファイルとロックファイル）も、Python であれば pathlib と time.sleep を使って素直に書ける。 ただし、本年度の必修範囲ではここまで踏み込まないので、興味のある学生向けの発展課題として位置付ける。",
+    "crumbs": [
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>対戦実験と GUI</span>"
+    ]
+  },
+  {
+    "objectID": "network.html#まとめ",
+    "href": "network.html#まとめ",
+    "title": "14  対戦実験と GUI",
+    "section": "14.8 まとめ",
+    "text": "14.8 まとめ\n\n対戦実験は条件をそろえて行い、ログを保存する。\nreversi-gui.py は本書で作成した関数をそのまま使う pygame ベースの GUI である。インタフェースを保っていれば自分の改良 AI でそのまま動く。\n実験ごとに git commit し、開発履歴を残すことが最終評価で重要になる。",
+    "crumbs": [
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>対戦実験と GUI</span>"
+    ]
+  },
+  {
+    "objectID": "grading.html",
+    "href": "grading.html",
+    "title": "15  まとめと評価",
+    "section": "",
+    "text": "15.1 提出物\n本実験の評価では、完成したプログラム、レポート、口頭説明を総合して判断する。 ここでは提出物・レポートの観点・口頭説明の観点を整理する。\n提出物は次の通りである。\nreversi_yourid.py には、\nを含めること。 独自に追加した関数には、何を評価しているのか、どのような意図で使うのかが分かるコメントまたはdocstringを付ける。",
+    "crumbs": [
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>まとめと評価</span>"
+    ]
+  },
+  {
+    "objectID": "grading.html#提出物",
+    "href": "grading.html#提出物",
+    "title": "15  まとめと評価",
+    "section": "",
+    "text": "reversi_yourid.py：本書の例題・練習で作成したすべての関数を含む単一の Python ファイル。\ntest_reversi.py：自分が書いた単体テスト。\n最終レポート：実験条件、結果、考察を記したもの。\n対戦ログ・実験結果：レポートに引用したログファイル。\n（任意）独自に作成したスクリプトやノートブック。\n\n\n\n第6章で実装した盤面のルール部分。\n第7章で実装した minimax 法。\n第8章で実装した αβ 法。\n第9～10章で実装した評価関数。",
+    "crumbs": [
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>まとめと評価</span>"
+    ]
+  },
+  {
+    "objectID": "grading.html#レポートの観点",
+    "href": "grading.html#レポートの観点",
+    "title": "15  まとめと評価",
+    "section": "15.2 レポートの観点",
+    "text": "15.2 レポートの観点\nレポートでは次の内容を説明する。\n\nオセロプログラム全体の構成（モジュール、関数の依存関係）。\n合法手判定と石の反転の実装方法。\nminimax 法の実装方法。\nαβ 枝刈りの実装方法と minimax 法との節点数の比較。\n評価関数の設計意図（各 board_evalN を何のために入れているか、重みをどう決めたか）。\n改良前後の実験結果（条件の表、対戦結果、勝敗）。\nテストや Git をどのように使ったか（pytest の出力、git log --oneline の貼り付け）。\n考察（うまくいったこと、うまくいかなかったこと、次にやるとしたら何をするか）。\n\nレポートのフォーマットは Markdown / PDF / Word のいずれでも構わないが、コードブロックと図表を読みやすく配置すること。",
+    "crumbs": [
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>まとめと評価</span>"
+    ]
+  },
+  {
+    "objectID": "grading.html#口頭説明",
+    "href": "grading.html#口頭説明",
+    "title": "15  まとめと評価",
+    "section": "15.3 口頭説明",
+    "text": "15.3 口頭説明\n口頭説明（プレゼンテーションや個別質疑）では、主に次の点を確認する。\n\n自分のプログラムの主要関数をコードを見ながら説明できるか。\n評価関数の工夫を、なぜそうしたかまで説明できるか。\n実験結果に基づいて、何が良くなり、何が課題として残ったかを説明できるか。\nエラーや不具合に対して、どのように調査し、どのように直したかを説明できるか。\n\n評価では、勝敗だけでなく、\n\n実装の正しさ\n説明の明確さ\n開発過程の記録（Git ログ、テスト）\n実験計画と考察の妥当性\n\nを重視する。 派手な手法を採用していなくても、自分が考えて改良し、実験で確かめたことが伝われば十分に高評価となる。",
+    "crumbs": [
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>まとめと評価</span>"
+    ]
+  },
+  {
+    "objectID": "grading.html#評価の重み目安",
+    "href": "grading.html#評価の重み目安",
+    "title": "15  まとめと評価",
+    "section": "15.4 評価の重み（目安）",
+    "text": "15.4 評価の重み（目安）\n\n\n\n観点\n重み\n\n\n\n\n基本機能の完成度（第6～8章）\n40%\n\n\n評価関数の設計と実験（第9～10章）\n25%\n\n\nGit・テストの活用（第3～4章）\n10%\n\n\nレポート・口頭説明の質\n20%\n\n\n発展課題（第11～12章のいずれか）への取り組み\n+5%（加点）\n\n\n\n第11章（メタヒューリスティクスによる最適化）または第12章（機械学習）への取り組みは加点対象である。 着手のみでも記録があれば評価する。 最終的にベースラインに勝てなくても、何を試し、結果がどうだったかを記録できていれば評価する。",
+    "crumbs": [
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>まとめと評価</span>"
+    ]
+  },
+  {
+    "objectID": "grading.html#学びの振り返り",
+    "href": "grading.html#学びの振り返り",
+    "title": "15  まとめと評価",
+    "section": "15.5 学びの振り返り",
+    "text": "15.5 学びの振り返り\n最後に、本実験全体を通じて意識してほしい点をまとめる。\n\n大きなシステムは分割して作り、テストで動作を保証しながら積み上げる。\nうまくいった状態を git commit で残しておくと、失敗からの復帰が容易になる。\n評価関数の改良は実験で確かめる。一度の対戦で結論を出さない。\n強い AI を作ることそのものよりも、何を試し、どう判断したかが知能工学実験の中心である。",
+    "crumbs": [
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>まとめと評価</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "16  参考文献",
+    "section": "",
+    "text": "渡辺宙志. 2020. GitHub演習. https://github.com/kaityo256/github.",
+    "crumbs": [
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>参考文献</span>"
+    ]
+  }
+]

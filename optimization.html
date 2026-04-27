@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>12&nbsp; メタヒューリスティクスによる評価関数の最適化 – 知能工学実験Ⅱ</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./learning.html" rel="next">
+<link href="./evaluation.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-9ece03dab9959ef5c886c0d317450186.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./optimization.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">メタヒューリスティクスによる評価関数の最適化</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">知能工学実験Ⅱ</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">はじめに</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./history.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">人工知能の歴史</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">環境構築と準備</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Gitによるバージョン管理</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testdev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><code>pytest</code> によるテスト駆動</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">ゲームと探索</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reversi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">オセロゲームの基本実装</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gametree.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">minimax 法によるゲーム木探索</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alphabeta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">αβ 枝刈り</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huristics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">ヒューリスティック評価関数</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">評価関数の改良と最終課題</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./optimization.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">メタヒューリスティクスによる評価関数の最適化</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">発展：機械学習による評価関数の構築</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./network.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">対戦実験と GUI</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">まとめと評価</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">参考文献</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#本章の到達目標" id="toc-本章の到達目標" class="nav-link active" data-scroll-target="#本章の到達目標"><span class="header-section-number">12.1</span> 本章の到達目標</a></li>
+  <li><a href="#問題の定式化" id="toc-問題の定式化" class="nav-link" data-scroll-target="#問題の定式化"><span class="header-section-number">12.2</span> 問題の定式化</a></li>
+  <li><a href="#共通フレームワーク" id="toc-共通フレームワーク" class="nav-link" data-scroll-target="#共通フレームワーク"><span class="header-section-number">12.3</span> 共通フレームワーク</a>
+  <ul class="collapse">
+  <li><a href="#例題パラメタライズした評価関数" id="toc-例題パラメタライズした評価関数" class="nav-link" data-scroll-target="#例題パラメタライズした評価関数"><span class="header-section-number">12.3.1</span> 例題：パラメタライズした評価関数</a></li>
+  <li><a href="#練習33適合度関数を実装する" id="toc-練習33適合度関数を実装する" class="nav-link" data-scroll-target="#練習33適合度関数を実装する"><span class="header-section-number">12.3.2</span> 練習33：適合度関数を実装する</a></li>
+  <li><a href="#探索コスト削減のヒント" id="toc-探索コスト削減のヒント" class="nav-link" data-scroll-target="#探索コスト削減のヒント"><span class="header-section-number">12.3.3</span> 探索コスト削減のヒント</a></li>
+  </ul></li>
+  <li><a href="#山登り法hill-climbing" id="toc-山登り法hill-climbing" class="nav-link" data-scroll-target="#山登り法hill-climbing"><span class="header-section-number">12.4</span> 山登り法（Hill Climbing）</a>
+  <ul class="collapse">
+  <li><a href="#練習34山登り法を実装する" id="toc-練習34山登り法を実装する" class="nav-link" data-scroll-target="#練習34山登り法を実装する"><span class="header-section-number">12.4.1</span> 練習34：山登り法を実装する</a></li>
+  <li><a href="#練習351-次元から動作確認" id="toc-練習351-次元から動作確認" class="nav-link" data-scroll-target="#練習351-次元から動作確認"><span class="header-section-number">12.4.2</span> 練習35：1 次元から動作確認</a></li>
+  <li><a href="#練習364-次元での山登り" id="toc-練習364-次元での山登り" class="nav-link" data-scroll-target="#練習364-次元での山登り"><span class="header-section-number">12.4.3</span> 練習36：4 次元での山登り</a></li>
+  </ul></li>
+  <li><a href="#焼きなまし法simulated-annealing" id="toc-焼きなまし法simulated-annealing" class="nav-link" data-scroll-target="#焼きなまし法simulated-annealing"><span class="header-section-number">12.5</span> 焼きなまし法（Simulated Annealing）</a>
+  <ul class="collapse">
+  <li><a href="#練習37焼きなまし法を実装する" id="toc-練習37焼きなまし法を実装する" class="nav-link" data-scroll-target="#練習37焼きなまし法を実装する"><span class="header-section-number">12.5.1</span> 練習37：焼きなまし法を実装する</a></li>
+  <li><a href="#練習38温度スケジュールの効果" id="toc-練習38温度スケジュールの効果" class="nav-link" data-scroll-target="#練習38温度スケジュールの効果"><span class="header-section-number">12.5.2</span> 練習38：温度スケジュールの効果</a></li>
+  </ul></li>
+  <li><a href="#遺伝的アルゴリズムgenetic-algorithm-ga" id="toc-遺伝的アルゴリズムgenetic-algorithm-ga" class="nav-link" data-scroll-target="#遺伝的アルゴリズムgenetic-algorithm-ga"><span class="header-section-number">12.6</span> 遺伝的アルゴリズム（Genetic Algorithm, GA）</a>
+  <ul class="collapse">
+  <li><a href="#練習39トーナメント選択" id="toc-練習39トーナメント選択" class="nav-link" data-scroll-target="#練習39トーナメント選択"><span class="header-section-number">12.6.1</span> 練習39：トーナメント選択</a></li>
+  <li><a href="#練習40交叉と突然変異" id="toc-練習40交叉と突然変異" class="nav-link" data-scroll-target="#練習40交叉と突然変異"><span class="header-section-number">12.6.2</span> 練習40：交叉と突然変異</a></li>
+  <li><a href="#練習41ga-本体" id="toc-練習41ga-本体" class="nav-link" data-scroll-target="#練習41ga-本体"><span class="header-section-number">12.6.3</span> 練習41：GA 本体</a></li>
+  </ul></li>
+  <li><a href="#アルゴリズム比較実験" id="toc-アルゴリズム比較実験" class="nav-link" data-scroll-target="#アルゴリズム比較実験"><span class="header-section-number">12.7</span> アルゴリズム比較実験</a>
+  <ul class="collapse">
+  <li><a href="#練習42適合度推移の比較" id="toc-練習42適合度推移の比較" class="nav-link" data-scroll-target="#練習42適合度推移の比較"><span class="header-section-number">12.7.1</span> 練習42：適合度推移の比較</a></li>
+  <li><a href="#練習43考察" id="toc-練習43考察" class="nav-link" data-scroll-target="#練習43考察"><span class="header-section-number">12.7.2</span> 練習43：考察</a></li>
+  </ul></li>
+  <li><a href="#発展他のアルゴリズム" id="toc-発展他のアルゴリズム" class="nav-link" data-scroll-target="#発展他のアルゴリズム"><span class="header-section-number">12.8</span> 発展：他のアルゴリズム</a>
+  <ul class="collapse">
+  <li><a href="#aco-の特徴選択への応用オプション" id="toc-aco-の特徴選択への応用オプション" class="nav-link" data-scroll-target="#aco-の特徴選択への応用オプション"><span class="header-section-number">12.8.1</span> ACO の特徴選択への応用（オプション）</a></li>
+  </ul></li>
+  <li><a href="#まとめ" id="toc-まとめ" class="nav-link" data-scroll-target="#まとめ"><span class="header-section-number">12.9</span> まとめ</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">メタヒューリスティクスによる評価関数の最適化</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>第9章で実装した評価関数 <code>eval_node()</code> には、<code>board_eval2</code>〜<code>board_eval5</code> の重み（<code>omomi</code>）と <code>BOARD_POINT</code> という多くのパラメータが登場した。 これらの値はすべて<strong>人間が直感で決めた</strong>ものであり、本当に最適とは限らない。</p>
+<p>本章では、対戦の勝率を「<strong>適合度（fitness）</strong>」として、評価関数の重みを<strong>自動的に最適化</strong>することを試みる。 これは AI の歴史で言えば「<strong>人間が知識を作り込む</strong>」段階から「<strong>最適化アルゴリズムが知識を獲得する</strong>」段階への移行であり、本実験では<strong>メタヒューリスティクス</strong>と呼ばれる一群の探索アルゴリズムを用いる。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>第12章（学習）との違い
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>本章で扱うのは、ゲームのルールや評価関数の構造はそのままにして、<strong>重みだけを自動探索する</strong>最適化である。 第12章では、対戦の局面と勝敗のデータから<strong>評価関数自体を学習</strong>する機械学習的アプローチを扱う。 両者は補完的な関係にあるが、出発点と「学ぶ対象」が異なる。</p>
+</div>
+</div>
+<section id="本章の到達目標" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="本章の到達目標"><span class="header-section-number">12.1</span> 本章の到達目標</h2>
+<ul>
+<li>評価関数の重みを最適化対象とした<strong>ブラックボックス最適化問題</strong>として定式化できる。</li>
+<li><strong>山登り法</strong>、<strong>焼きなまし法</strong>、<strong>遺伝的アルゴリズム</strong>を実装し、同じ問題に対する挙動を比較できる。</li>
+<li>各アルゴリズムの探索の特性（局所性／大域性、収束速度、計算予算）を実験的に比較できる。</li>
+</ul>
+</section>
+<section id="問題の定式化" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="問題の定式化"><span class="header-section-number">12.2</span> 問題の定式化</h2>
+<p>評価関数の重みベクトルを次のように書く。</p>
+<p><span class="math display">\[
+\mathbf{w} = (w_2, w_3, w_4, w_5)
+\]</span></p>
+<p>ここで <span class="math inline">\(w_2, w_3, w_4, w_5\)</span> はそれぞれ <code>board_eval2</code>〜<code>board_eval5</code> の <code>omomi</code> に相当する。 求めたいのは、</p>
+<p><span class="math display">\[
+\mathbf{w}^* = \arg\max_{\mathbf{w}} \; \text{fitness}(\mathbf{w})
+\]</span></p>
+<p>である。 ここで <span class="math inline">\(\text{fitness}(\mathbf{w})\)</span> は、重み <span class="math inline">\(\mathbf{w}\)</span> を持つ AI を<strong>ベースライン AI</strong>（人間が決めた基準重みを持つ AI）と複数回対戦させたときの<strong>勝率</strong>などとする。</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>評価のコストに注意
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\text{fitness}(\mathbf{w})\)</span> を 1 回計算するには、<strong>ゲームを N 回プレイ</strong>する必要がある。 1 ゲームに数秒かかるため、評価呼び出し回数を抑える工夫（探索深さを浅くする、<span class="math inline">\(N\)</span> を小さく取る、4×4 盤に縮小する）が現実的になる。</p>
+</div>
+</div>
+</section>
+<section id="共通フレームワーク" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="共通フレームワーク"><span class="header-section-number">12.3</span> 共通フレームワーク</h2>
+<section id="例題パラメタライズした評価関数" class="level3" data-number="12.3.1">
+<h3 data-number="12.3.1" class="anchored" data-anchor-id="例題パラメタライズした評価関数"><span class="header-section-number">12.3.1</span> 例題：パラメタライズした評価関数</h3>
+<p><code>eval_node()</code> を、重みベクトルを引数にとる<strong>ファクトリ関数</strong>として書き直す。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> make_eval_node(weights):</span>
+<span id="cb1-2"><a href="#cb1-2"></a>    <span class="co">"""重みベクトルから eval_node 関数を作成して返す。"""</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>    w2, w3, w4, w5 <span class="op">=</span> weights</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>    <span class="kw">def</span> eval_node(node, turn, count):</span>
+<span id="cb1-6"><a href="#cb1-6"></a>        board <span class="op">=</span> node.board</span>
+<span id="cb1-7"><a href="#cb1-7"></a>        <span class="cf">if</span> count <span class="op">&lt;</span> <span class="dv">25</span>:</span>
+<span id="cb1-8"><a href="#cb1-8"></a>            <span class="cf">return</span> (board_eval2(board, w2)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>                    <span class="op">+</span> board_eval3(board, turn, w3)</span>
+<span id="cb1-10"><a href="#cb1-10"></a>                    <span class="op">+</span> board_eval4(board, w4)</span>
+<span id="cb1-11"><a href="#cb1-11"></a>                    <span class="op">+</span> board_eval5(board, turn, w5))</span>
+<span id="cb1-12"><a href="#cb1-12"></a>        <span class="cf">elif</span> count <span class="op">&lt;</span> <span class="dv">40</span>:</span>
+<span id="cb1-13"><a href="#cb1-13"></a>            <span class="cf">return</span> (board_eval2(board, w2)</span>
+<span id="cb1-14"><a href="#cb1-14"></a>                    <span class="op">+</span> board_eval3(board, turn, w3 <span class="op">*</span> <span class="dv">2</span>)</span>
+<span id="cb1-15"><a href="#cb1-15"></a>                    <span class="op">+</span> board_eval4(board, w4))</span>
+<span id="cb1-16"><a href="#cb1-16"></a>        <span class="cf">elif</span> count <span class="op">&lt;</span> <span class="dv">60</span>:</span>
+<span id="cb1-17"><a href="#cb1-17"></a>            <span class="cf">return</span> (board_eval2(board, w2)</span>
+<span id="cb1-18"><a href="#cb1-18"></a>                    <span class="op">+</span> board_eval3(board, turn, w3)</span>
+<span id="cb1-19"><a href="#cb1-19"></a>                    <span class="op">+</span> board_eval4(board, w4))</span>
+<span id="cb1-20"><a href="#cb1-20"></a>        <span class="cf">else</span>:</span>
+<span id="cb1-21"><a href="#cb1-21"></a>            <span class="cf">return</span> board_eval(board)</span>
+<span id="cb1-22"><a href="#cb1-22"></a></span>
+<span id="cb1-23"><a href="#cb1-23"></a>    <span class="cf">return</span> eval_node</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>reversi_yourid.py</code> の <code>eval_node</code> を直接書き換えるのではなく、モジュールグローバルとして登録する形にすると差し替えが楽になる。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># モジュール全体で使う「現在の評価関数」を保持する</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>_current_eval_node <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="kw">def</span> set_eval_node(fn):</span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="kw">global</span> _current_eval_node</span>
+<span id="cb2-6"><a href="#cb2-6"></a>    _current_eval_node <span class="op">=</span> fn</span>
+<span id="cb2-7"><a href="#cb2-7"></a></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="kw">def</span> eval_node(node, turn, count):</span>
+<span id="cb2-9"><a href="#cb2-9"></a>    <span class="cf">return</span> _current_eval_node(node, turn, count)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="練習33適合度関数を実装する" class="level3" data-number="12.3.2">
+<h3 data-number="12.3.2" class="anchored" data-anchor-id="練習33適合度関数を実装する"><span class="header-section-number">12.3.2</span> 練習33：適合度関数を実装する</h3>
+<p>重みベクトル <code>weights</code> と、対戦相手のベースライン重み <code>baseline</code> を受け取り、<code>n_games</code> 回対戦して勝利数を返す関数 <code>fitness(weights, baseline, n_games, depth)</code> を定義せよ。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">def</span> play_one_game(eval_a, eval_b, depth):</span>
+<span id="cb3-2"><a href="#cb3-2"></a>    <span class="co">"""eval_a を先手、eval_b を後手として 1 ゲーム対戦し、勝者を返す。"""</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>    ...</span>
+<span id="cb3-4"><a href="#cb3-4"></a>    <span class="cf">return</span> winner   <span class="co"># BOARD_SENTE / BOARD_GOTE / 0(=draw)</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="kw">def</span> fitness(weights, baseline, n_games, depth):</span>
+<span id="cb3-8"><a href="#cb3-8"></a>    eval_w <span class="op">=</span> make_eval_node(weights)</span>
+<span id="cb3-9"><a href="#cb3-9"></a>    eval_b <span class="op">=</span> make_eval_node(baseline)</span>
+<span id="cb3-10"><a href="#cb3-10"></a>    wins <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>    <span class="co"># 公平のため、先手・後手を交代しながら半分ずつ対戦する</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_games):</span>
+<span id="cb3-13"><a href="#cb3-13"></a>        <span class="cf">if</span> i <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb3-14"><a href="#cb3-14"></a>            winner <span class="op">=</span> play_one_game(eval_w, eval_b, depth)</span>
+<span id="cb3-15"><a href="#cb3-15"></a>            <span class="cf">if</span> winner <span class="op">==</span> BOARD_SENTE:</span>
+<span id="cb3-16"><a href="#cb3-16"></a>                wins <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a>        <span class="cf">else</span>:</span>
+<span id="cb3-18"><a href="#cb3-18"></a>            winner <span class="op">=</span> play_one_game(eval_b, eval_w, depth)</span>
+<span id="cb3-19"><a href="#cb3-19"></a>            <span class="cf">if</span> winner <span class="op">==</span> BOARD_GOTE:</span>
+<span id="cb3-20"><a href="#cb3-20"></a>                wins <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb3-21"><a href="#cb3-21"></a>    <span class="cf">return</span> wins</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>注意：minimax/αβ は決定的
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>同じ重みで同じ初期盤面なら、minimax / αβ は常に同じ手を指す。 そのため対戦結果も毎回同じになり、<code>n_games</code> を増やしても情報が増えない。 これを避けるには、</p>
+<ul>
+<li>各ゲームの最初の数手をランダムに打つ。</li>
+<li>子節点の探索順序にランダム性を入れる（<code>random.shuffle(children)</code> を <code>expand_node</code> の末尾に入れる）。</li>
+<li>評価値に小さな乱数を加えて同点を崩す。</li>
+</ul>
+<p>のいずれかを採用する。本実験ではいずれの方法でもよい。</p>
+</div>
+</div>
+</section>
+<section id="探索コスト削減のヒント" class="level3" data-number="12.3.3">
+<h3 data-number="12.3.3" class="anchored" data-anchor-id="探索コスト削減のヒント"><span class="header-section-number">12.3.3</span> 探索コスト削減のヒント</h3>
+<ul>
+<li><strong>深さは浅く</strong>：<code>depth = 2</code> でも、評価関数の差は十分に勝敗に現れる。</li>
+<li><strong>盤面を小さく</strong>：<code>BOARD_SIZE = 6</code> に縮小するとゲームが速い。</li>
+<li><strong>対戦数は控えめに</strong>：練習段階では <code>n_games = 4</code>〜<code>8</code> 程度から始める。</li>
+</ul>
+</section>
+</section>
+<section id="山登り法hill-climbing" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="山登り法hill-climbing"><span class="header-section-number">12.4</span> 山登り法（Hill Climbing）</h2>
+<p>最も素朴な局所探索アルゴリズムである。 現在の解の近傍をランダムに 1 つ生成し、適合度が改善するなら採用、そうでなければ捨てる、を繰り返す。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1"></a>入力: 初期解 w0、最大反復回数 T、ステップサイズ σ</span>
+<span id="cb4-2"><a href="#cb4-2"></a>出力: 最終解</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a>w ← w0</span>
+<span id="cb4-5"><a href="#cb4-5"></a>f ← fitness(w)</span>
+<span id="cb4-6"><a href="#cb4-6"></a>for t in 1..T:</span>
+<span id="cb4-7"><a href="#cb4-7"></a>    w' ← w + N(0, σ²)            # ガウス雑音による近傍生成</span>
+<span id="cb4-8"><a href="#cb4-8"></a>    f' ← fitness(w')</span>
+<span id="cb4-9"><a href="#cb4-9"></a>    if f' &gt; f:</span>
+<span id="cb4-10"><a href="#cb4-10"></a>        w ← w'</span>
+<span id="cb4-11"><a href="#cb4-11"></a>        f ← f'</span>
+<span id="cb4-12"><a href="#cb4-12"></a>return w</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="練習34山登り法を実装する" class="level3" data-number="12.4.1">
+<h3 data-number="12.4.1" class="anchored" data-anchor-id="練習34山登り法を実装する"><span class="header-section-number">12.4.1</span> 練習34：山登り法を実装する</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="im">import</span> random</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">def</span> hill_climbing(initial_weights, max_iter, sigma, baseline, n_games, depth):</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    current <span class="op">=</span> <span class="bu">list</span>(initial_weights)</span>
+<span id="cb5-5"><a href="#cb5-5"></a>    current_fitness <span class="op">=</span> fitness(current, baseline, n_games, depth)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    history <span class="op">=</span> [(<span class="dv">0</span>, current[:], current_fitness)]</span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, max_iter <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb5-9"><a href="#cb5-9"></a>        neighbor <span class="op">=</span> [w <span class="op">+</span> random.gauss(<span class="dv">0</span>, sigma) <span class="cf">for</span> w <span class="kw">in</span> current]</span>
+<span id="cb5-10"><a href="#cb5-10"></a>        neighbor <span class="op">=</span> [<span class="bu">max</span>(<span class="fl">0.0</span>, w) <span class="cf">for</span> w <span class="kw">in</span> neighbor]   <span class="co"># 重みは非負に制限</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a>        neighbor_fitness <span class="op">=</span> fitness(neighbor, baseline, n_games, depth)</span>
+<span id="cb5-12"><a href="#cb5-12"></a>        <span class="cf">if</span> neighbor_fitness <span class="op">&gt;</span> current_fitness:</span>
+<span id="cb5-13"><a href="#cb5-13"></a>            current <span class="op">=</span> neighbor</span>
+<span id="cb5-14"><a href="#cb5-14"></a>            current_fitness <span class="op">=</span> neighbor_fitness</span>
+<span id="cb5-15"><a href="#cb5-15"></a>        history.append((t, current[:], current_fitness))</span>
+<span id="cb5-16"><a href="#cb5-16"></a></span>
+<span id="cb5-17"><a href="#cb5-17"></a>    <span class="cf">return</span> current, history</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="練習351-次元から動作確認" class="level3" data-number="12.4.2">
+<h3 data-number="12.4.2" class="anchored" data-anchor-id="練習351-次元から動作確認"><span class="header-section-number">12.4.2</span> 練習35：1 次元から動作確認</h3>
+<p>最初は次元を絞って、確実に挙動を確認する。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># まず w4 (確定石) だけを動かす</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">def</span> fitness_w4(w4, baseline, n_games, depth):</span>
+<span id="cb6-3"><a href="#cb6-3"></a>    weights <span class="op">=</span> <span class="bu">list</span>(baseline)</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    weights[<span class="dv">2</span>] <span class="op">=</span> w4   <span class="co"># baseline の他の重みは固定、w4 だけ可変</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>    <span class="cf">return</span> fitness(weights, baseline, n_games, depth)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>w4</code> を 0, 50, 100, 200, 500, 1000 と振って、適合度（勝利数）をプロットせよ。 山型・単調な形・ぎざぎざのいずれが見られるかを観察する。</p>
+</section>
+<section id="練習364-次元での山登り" class="level3" data-number="12.4.3">
+<h3 data-number="12.4.3" class="anchored" data-anchor-id="練習364-次元での山登り"><span class="header-section-number">12.4.3</span> 練習36：4 次元での山登り</h3>
+<p>すべての重みを動かす本格的な山登り法を実行し、<code>history</code> の適合度の推移をプロットせよ。</p>
+<p>考察:</p>
+<ul>
+<li>局所最適に陥った（途中で適合度の改善が止まった）か。</li>
+<li>ステップサイズ <span class="math inline">\(\sigma\)</span> を変えると挙動はどう変わるか。</li>
+</ul>
+</section>
+</section>
+<section id="焼きなまし法simulated-annealing" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="焼きなまし法simulated-annealing"><span class="header-section-number">12.5</span> 焼きなまし法（Simulated Annealing）</h2>
+<p>山登り法は局所最適に陥る欠点がある。 焼きなまし法は、<strong>改善しなくても確率的に受け入れる</strong>ことで局所解を脱出できる。 受け入れ確率は「温度」 <span class="math inline">\(T\)</span> により制御し、<span class="math inline">\(T\)</span> は反復とともに小さくなる（<strong>冷却</strong>）。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>受け入れ確率: P = exp((f' - f) / T)</span>
+<span id="cb7-2"><a href="#cb7-2"></a>ただし f' &gt; f なら必ず採用、 f' &lt;= f なら確率 P で採用</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="練習37焼きなまし法を実装する" class="level3" data-number="12.5.1">
+<h3 data-number="12.5.1" class="anchored" data-anchor-id="練習37焼きなまし法を実装する"><span class="header-section-number">12.5.1</span> 練習37：焼きなまし法を実装する</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">import</span> math</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="kw">def</span> simulated_annealing(initial_weights, max_iter, sigma, T0, T_end,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>                        baseline, n_games, depth):</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    current <span class="op">=</span> <span class="bu">list</span>(initial_weights)</span>
+<span id="cb8-6"><a href="#cb8-6"></a>    current_fitness <span class="op">=</span> fitness(current, baseline, n_games, depth)</span>
+<span id="cb8-7"><a href="#cb8-7"></a>    best, best_fitness <span class="op">=</span> current[:], current_fitness</span>
+<span id="cb8-8"><a href="#cb8-8"></a>    history <span class="op">=</span> [(<span class="dv">0</span>, current[:], current_fitness)]</span>
+<span id="cb8-9"><a href="#cb8-9"></a></span>
+<span id="cb8-10"><a href="#cb8-10"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, max_iter <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb8-11"><a href="#cb8-11"></a>        T <span class="op">=</span> T0 <span class="op">*</span> (T_end <span class="op">/</span> T0) <span class="op">**</span> (t <span class="op">/</span> max_iter)   <span class="co"># 指数冷却</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>        neighbor <span class="op">=</span> [<span class="bu">max</span>(<span class="fl">0.0</span>, w <span class="op">+</span> random.gauss(<span class="dv">0</span>, sigma)) <span class="cf">for</span> w <span class="kw">in</span> current]</span>
+<span id="cb8-13"><a href="#cb8-13"></a>        nf <span class="op">=</span> fitness(neighbor, baseline, n_games, depth)</span>
+<span id="cb8-14"><a href="#cb8-14"></a>        <span class="cf">if</span> nf <span class="op">&gt;</span> current_fitness:</span>
+<span id="cb8-15"><a href="#cb8-15"></a>            current, current_fitness <span class="op">=</span> neighbor, nf</span>
+<span id="cb8-16"><a href="#cb8-16"></a>        <span class="cf">else</span>:</span>
+<span id="cb8-17"><a href="#cb8-17"></a>            <span class="cf">if</span> random.random() <span class="op">&lt;</span> math.exp((nf <span class="op">-</span> current_fitness) <span class="op">/</span> <span class="bu">max</span>(T, <span class="fl">1e-9</span>)):</span>
+<span id="cb8-18"><a href="#cb8-18"></a>                current, current_fitness <span class="op">=</span> neighbor, nf</span>
+<span id="cb8-19"><a href="#cb8-19"></a>        <span class="cf">if</span> current_fitness <span class="op">&gt;</span> best_fitness:</span>
+<span id="cb8-20"><a href="#cb8-20"></a>            best, best_fitness <span class="op">=</span> current[:], current_fitness</span>
+<span id="cb8-21"><a href="#cb8-21"></a>        history.append((t, current[:], current_fitness))</span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a>    <span class="cf">return</span> best, history</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="練習38温度スケジュールの効果" class="level3" data-number="12.5.2">
+<h3 data-number="12.5.2" class="anchored" data-anchor-id="練習38温度スケジュールの効果"><span class="header-section-number">12.5.2</span> 練習38：温度スケジュールの効果</h3>
+<p><code>T0</code>、<code>T_end</code> を変えて結果を比較せよ。 <code>T0</code> が大きすぎるとランダムウォーク、<code>T0</code> が小さすぎると山登り法と同じ挙動になる。</p>
+</section>
+</section>
+<section id="遺伝的アルゴリズムgenetic-algorithm-ga" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="遺伝的アルゴリズムgenetic-algorithm-ga"><span class="header-section-number">12.6</span> 遺伝的アルゴリズム（Genetic Algorithm, GA）</h2>
+<p>集団ベースの大域探索手法である。 複数の重みベクトル（<strong>個体</strong>）を保持し、適合度の高いものを選んで<strong>交叉</strong>と<strong>突然変異</strong>で次世代を作る。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1"><a href="#cb9-1"></a>入力: 個体数 N、世代数 G、交叉確率 pc、突然変異確率 pm</span>
+<span id="cb9-2"><a href="#cb9-2"></a>出力: 最終世代の最良個体</span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a>集団 P ← ランダムに N 個の個体を生成</span>
+<span id="cb9-5"><a href="#cb9-5"></a>for g in 1..G:</span>
+<span id="cb9-6"><a href="#cb9-6"></a>    各個体の適合度を計算</span>
+<span id="cb9-7"><a href="#cb9-7"></a>    新集団 P' ← []</span>
+<span id="cb9-8"><a href="#cb9-8"></a>    while |P'| &lt; N:</span>
+<span id="cb9-9"><a href="#cb9-9"></a>        親 a, b ← トーナメント選択(P)</span>
+<span id="cb9-10"><a href="#cb9-10"></a>        子 c, d ← 交叉(a, b) (確率 pc)</span>
+<span id="cb9-11"><a href="#cb9-11"></a>        c, d ← 突然変異(c, d) (確率 pm)</span>
+<span id="cb9-12"><a href="#cb9-12"></a>        P' に c, d を追加</span>
+<span id="cb9-13"><a href="#cb9-13"></a>    P ← P'</span>
+<span id="cb9-14"><a href="#cb9-14"></a>return Pの最良個体</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="練習39トーナメント選択" class="level3" data-number="12.6.1">
+<h3 data-number="12.6.1" class="anchored" data-anchor-id="練習39トーナメント選択"><span class="header-section-number">12.6.1</span> 練習39：トーナメント選択</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">def</span> tournament_select(population, fitnesses, k<span class="op">=</span><span class="dv">3</span>):</span>
+<span id="cb10-2"><a href="#cb10-2"></a>    <span class="co">"""k 個をランダムに選び、その中で最良の個体を返す"""</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>    candidates <span class="op">=</span> random.sample(<span class="bu">range</span>(<span class="bu">len</span>(population)), k)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>    best <span class="op">=</span> <span class="bu">max</span>(candidates, key<span class="op">=</span><span class="kw">lambda</span> i: fitnesses[i])</span>
+<span id="cb10-5"><a href="#cb10-5"></a>    <span class="cf">return</span> population[best]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="練習40交叉と突然変異" class="level3" data-number="12.6.2">
+<h3 data-number="12.6.2" class="anchored" data-anchor-id="練習40交叉と突然変異"><span class="header-section-number">12.6.2</span> 練習40：交叉と突然変異</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">def</span> crossover(a, b):</span>
+<span id="cb11-2"><a href="#cb11-2"></a>    <span class="co">"""一様交叉：各次元について確率 0.5 で親を入れ替える"""</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>    c <span class="op">=</span> [a[i] <span class="cf">if</span> random.random() <span class="op">&lt;</span> <span class="fl">0.5</span> <span class="cf">else</span> b[i] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(a))]</span>
+<span id="cb11-4"><a href="#cb11-4"></a>    d <span class="op">=</span> [b[i] <span class="cf">if</span> random.random() <span class="op">&lt;</span> <span class="fl">0.5</span> <span class="cf">else</span> a[i] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(a))]</span>
+<span id="cb11-5"><a href="#cb11-5"></a>    <span class="cf">return</span> c, d</span>
+<span id="cb11-6"><a href="#cb11-6"></a></span>
+<span id="cb11-7"><a href="#cb11-7"></a></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="kw">def</span> mutate(individual, sigma, pm):</span>
+<span id="cb11-9"><a href="#cb11-9"></a>    <span class="co">"""各次元に確率 pm でガウス雑音を加える"""</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a>    <span class="cf">return</span> [</span>
+<span id="cb11-11"><a href="#cb11-11"></a>        <span class="bu">max</span>(<span class="fl">0.0</span>, w <span class="op">+</span> random.gauss(<span class="dv">0</span>, sigma)) <span class="cf">if</span> random.random() <span class="op">&lt;</span> pm <span class="cf">else</span> w</span>
+<span id="cb11-12"><a href="#cb11-12"></a>        <span class="cf">for</span> w <span class="kw">in</span> individual</span>
+<span id="cb11-13"><a href="#cb11-13"></a>    ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="練習41ga-本体" class="level3" data-number="12.6.3">
+<h3 data-number="12.6.3" class="anchored" data-anchor-id="練習41ga-本体"><span class="header-section-number">12.6.3</span> 練習41：GA 本体</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">def</span> genetic_algorithm(pop_size, generations, baseline, n_games, depth,</span>
+<span id="cb12-2"><a href="#cb12-2"></a>                      sigma<span class="op">=</span><span class="fl">20.0</span>, pc<span class="op">=</span><span class="fl">0.8</span>, pm<span class="op">=</span><span class="fl">0.2</span>):</span>
+<span id="cb12-3"><a href="#cb12-3"></a>    <span class="co"># 初期集団：baseline まわりの乱数で初期化</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a>    population <span class="op">=</span> [</span>
+<span id="cb12-5"><a href="#cb12-5"></a>        [<span class="bu">max</span>(<span class="fl">0.0</span>, w <span class="op">+</span> random.gauss(<span class="dv">0</span>, sigma <span class="op">*</span> <span class="dv">2</span>)) <span class="cf">for</span> w <span class="kw">in</span> baseline]</span>
+<span id="cb12-6"><a href="#cb12-6"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(pop_size)</span>
+<span id="cb12-7"><a href="#cb12-7"></a>    ]</span>
+<span id="cb12-8"><a href="#cb12-8"></a>    history <span class="op">=</span> []</span>
+<span id="cb12-9"><a href="#cb12-9"></a></span>
+<span id="cb12-10"><a href="#cb12-10"></a>    <span class="cf">for</span> g <span class="kw">in</span> <span class="bu">range</span>(generations):</span>
+<span id="cb12-11"><a href="#cb12-11"></a>        fitnesses <span class="op">=</span> [fitness(ind, baseline, n_games, depth) <span class="cf">for</span> ind <span class="kw">in</span> population]</span>
+<span id="cb12-12"><a href="#cb12-12"></a>        best_idx <span class="op">=</span> <span class="bu">max</span>(<span class="bu">range</span>(pop_size), key<span class="op">=</span><span class="kw">lambda</span> i: fitnesses[i])</span>
+<span id="cb12-13"><a href="#cb12-13"></a>        history.append((g, population[best_idx][:], fitnesses[best_idx]))</span>
+<span id="cb12-14"><a href="#cb12-14"></a></span>
+<span id="cb12-15"><a href="#cb12-15"></a>        new_pop <span class="op">=</span> [population[best_idx][:]]   <span class="co"># エリート保存</span></span>
+<span id="cb12-16"><a href="#cb12-16"></a>        <span class="cf">while</span> <span class="bu">len</span>(new_pop) <span class="op">&lt;</span> pop_size:</span>
+<span id="cb12-17"><a href="#cb12-17"></a>            a <span class="op">=</span> tournament_select(population, fitnesses)</span>
+<span id="cb12-18"><a href="#cb12-18"></a>            b <span class="op">=</span> tournament_select(population, fitnesses)</span>
+<span id="cb12-19"><a href="#cb12-19"></a>            <span class="cf">if</span> random.random() <span class="op">&lt;</span> pc:</span>
+<span id="cb12-20"><a href="#cb12-20"></a>                c, d <span class="op">=</span> crossover(a, b)</span>
+<span id="cb12-21"><a href="#cb12-21"></a>            <span class="cf">else</span>:</span>
+<span id="cb12-22"><a href="#cb12-22"></a>                c, d <span class="op">=</span> a[:], b[:]</span>
+<span id="cb12-23"><a href="#cb12-23"></a>            c <span class="op">=</span> mutate(c, sigma, pm)</span>
+<span id="cb12-24"><a href="#cb12-24"></a>            d <span class="op">=</span> mutate(d, sigma, pm)</span>
+<span id="cb12-25"><a href="#cb12-25"></a>            new_pop.append(c)</span>
+<span id="cb12-26"><a href="#cb12-26"></a>            <span class="cf">if</span> <span class="bu">len</span>(new_pop) <span class="op">&lt;</span> pop_size:</span>
+<span id="cb12-27"><a href="#cb12-27"></a>                new_pop.append(d)</span>
+<span id="cb12-28"><a href="#cb12-28"></a>        population <span class="op">=</span> new_pop</span>
+<span id="cb12-29"><a href="#cb12-29"></a></span>
+<span id="cb12-30"><a href="#cb12-30"></a>    fitnesses <span class="op">=</span> [fitness(ind, baseline, n_games, depth) <span class="cf">for</span> ind <span class="kw">in</span> population]</span>
+<span id="cb12-31"><a href="#cb12-31"></a>    best_idx <span class="op">=</span> <span class="bu">max</span>(<span class="bu">range</span>(pop_size), key<span class="op">=</span><span class="kw">lambda</span> i: fitnesses[i])</span>
+<span id="cb12-32"><a href="#cb12-32"></a>    <span class="cf">return</span> population[best_idx], history</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>計算予算の見積り
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>1 世代の評価コストは「個体数 × 1 個体の対戦数」回のゲーム実行になる。 個体数 10、世代数 10、1 個体あたり 4 ゲームなら、合計 400 ゲーム。 1 ゲームが 2 秒なら 800 秒（約 13 分）。 最初は個体数 6、世代数 6、対戦数 2 程度で動作確認するとよい。</p>
+</div>
+</div>
+</section>
+</section>
+<section id="アルゴリズム比較実験" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="アルゴリズム比較実験"><span class="header-section-number">12.7</span> アルゴリズム比較実験</h2>
+<section id="練習42適合度推移の比較" class="level3" data-number="12.7.1">
+<h3 data-number="12.7.1" class="anchored" data-anchor-id="練習42適合度推移の比較"><span class="header-section-number">12.7.1</span> 練習42：適合度推移の比較</h3>
+<p>山登り法、焼きなまし法、GA を<strong>同じ評価予算</strong>（同じ総ゲーム数）で実行し、最終的な最良適合度をそれぞれ記録する。 <code>history</code> から適合度の推移をプロットすると、各アルゴリズムの特性が見える。</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>アルゴリズム</th>
+<th style="text-align: right;">評価予算（ゲーム数）</th>
+<th style="text-align: right;">最終最良適合度</th>
+<th>最良重み</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hill Climbing</td>
+<td style="text-align: right;">200</td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Simulated Annealing</td>
+<td style="text-align: right;">200</td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Genetic Algorithm</td>
+<td style="text-align: right;">200</td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="練習43考察" class="level3" data-number="12.7.2">
+<h3 data-number="12.7.2" class="anchored" data-anchor-id="練習43考察"><span class="header-section-number">12.7.2</span> 練習43：考察</h3>
+<p>次の点を考察せよ。</p>
+<ul>
+<li>同じ評価予算で、どのアルゴリズムが最も良い解を見つけたか。</li>
+<li>局所最適に陥りやすいのはどれか。</li>
+<li>集団ベース（GA）の利点と欠点。</li>
+<li>評価のノイズ（ゲームの確率性）がアルゴリズムに与える影響。</li>
+<li>ベースラインに勝つ重みは見つかったか。見つかった場合、それは過学習（特定の対戦相手だけに勝つ）になっていないか。</li>
+</ul>
+</section>
+</section>
+<section id="発展他のアルゴリズム" class="level2" data-number="12.8">
+<h2 data-number="12.8" class="anchored" data-anchor-id="発展他のアルゴリズム"><span class="header-section-number">12.8</span> 発展：他のアルゴリズム</h2>
+<p>時間に余裕があれば、次のアルゴリズムも比較対象にできる。</p>
+<ul>
+<li><strong>PSO（Particle Swarm Optimization）</strong>：粒子の速度を「個人最良」「群れ最良」へ向けて更新する。連続値最適化に向く。</li>
+<li><strong>CMA-ES</strong>：分布の共分散行列を適応的に更新する高性能な進化戦略。<code>pip install cma</code> で使える。</li>
+<li><strong>ACO（Ant Colony Optimization）</strong>：本来は組合せ最適化向けの手法。本問題に適用するなら、<strong>評価項目（特徴）の部分集合</strong>を蟻に選ばせる「<strong>特徴選択型 ACO</strong>」が自然である。<code>board_eval2</code>〜<code>board_eval5</code> のうちどれを使うかを決める問題に置き換える。</li>
+</ul>
+<section id="aco-の特徴選択への応用オプション" class="level3" data-number="12.8.1">
+<h3 data-number="12.8.1" class="anchored" data-anchor-id="aco-の特徴選択への応用オプション"><span class="header-section-number">12.8.1</span> ACO の特徴選択への応用（オプション）</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a href="#cb13-1"></a>特徴の集合 F = {f2, f3, f4, f5, ...}</span>
+<span id="cb13-2"><a href="#cb13-2"></a>各特徴 f に対するフェロモン量 τ(f)</span>
+<span id="cb13-3"><a href="#cb13-3"></a>各蟻は確率 P(f) ∝ τ(f)^α で特徴を選ぶ</span>
+<span id="cb13-4"><a href="#cb13-4"></a>選んだ部分集合で AI を構成し、勝利数を測る</span>
+<span id="cb13-5"><a href="#cb13-5"></a>良かった蟻のフェロモンを増やす（更新）</span>
+<span id="cb13-6"><a href="#cb13-6"></a>悪かった蟻のフェロモンは蒸発で減る</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>このように、ACO は本来「離散的な選択を多数組み合わせる」問題に向いた手法であることを実装を通じて体験できる。</p>
+</section>
+</section>
+<section id="まとめ" class="level2" data-number="12.9">
+<h2 data-number="12.9" class="anchored" data-anchor-id="まとめ"><span class="header-section-number">12.9</span> まとめ</h2>
+<ul>
+<li>評価関数の重みを<strong>自動的にチューニングする</strong>最適化問題として定式化することで、人間が決めた重みを超えられる可能性がある。</li>
+<li>山登り法はベースラインだが局所最適に弱い。焼きなまし法は確率的に脱出できる。GA は集団で同時に複数の領域を探索できる。</li>
+<li>どのアルゴリズムも<strong>評価コストが高い</strong>（毎回ゲームを走らせる）ため、評価予算と探索効率のバランスが重要。</li>
+<li>メタヒューリスティクスは「<strong>人間の知識</strong>」と「<strong>機械学習</strong>」の中間に位置する考え方であり、両者を結ぶ重要な技法である。</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./evaluation.html" class="pagination-link" aria-label="評価関数の改良と最終課題">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">評価関数の改良と最終課題</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./learning.html" class="pagination-link" aria-label="発展：機械学習による評価関数の構築">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">発展：機械学習による評価関数の構築</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
