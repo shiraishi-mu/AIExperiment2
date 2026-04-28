@@ -74,35 +74,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -301,9 +272,13 @@ window.Quarto = {
 <h1 data-number="1"><span class="header-section-number">1</span> はじめに</h1>
 <p>人工知能の研究は、推論、探索、知識表現、機械学習、深層学習、生成AIへと発展してきた。 近年の生成AIの著しい性能向上は、大規模なデータと計算資源、そして適切なアルゴリズムが組み合わさった結果である。 このような華やかな成果の裏側には、人工知能の基礎的な概念である「<strong>状態をどのように表現するか</strong>」「<strong>限られた計算資源の中でどのように解を探索するか</strong>」という古典的な問いがある。 これらは、現在の機械学習やAIエージェントにも共通する考え方であり、人工知能を学ぶ上で避けて通れないテーマである。</p>
 <p>本実験では、Pythonを用いて<strong>オセロゲームを段階的に実装する</strong>ことを通して、これらの基礎を体験的に学ぶ。</p>
-<section id="本実験の特徴" class="level2" data-number="1.1">
+<section id="本実験の特徴" class="level2 page-columns page-full" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="本実験の特徴"><span class="header-section-number">1.1</span> 本実験の特徴</h2>
-<p>旧教材（2025年度まで）ではプログラミング言語としてLISPを用いていた。 LISPは記号処理に特化した古典的な人工知能言語であり、ゲーム木探索や知識表現の研究で長く使われてきた。 しかし、近年の機械学習・深層学習・生成AI研究は、ライブラリと開発エコシステムの豊かさからPythonが事実上の標準言語となっている。 そこで2026年度からは、本実験もPythonによる実装に切り替える。 あわせて、現代のソフトウェア開発で必須となっている</p>
+<p>旧教材（2025年度まで）ではプログラミング言語としてLISPを用いていた。 LISPは記号処理に特化した古典的な人工知能言語であり、ゲーム木探索や知識表現の研究で長く使われてきた。 しかし、近年の機械学習・深層学習・生成AI研究は、ライブラリと開発エコシステムの豊かさからPythonが事実上の標準言語となっている。</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>LISPは、人工知能の黎明期から使われてきた歴史的な言語であり、シンプルな構文と強力なマクロ機能を持つ。 その抽象性の高さは、ラムダ計算や関数型プログラミング言語としての側面を持ち、現代でも重要な言語の一つである。</p>
+</div></div><p>そこで2026年度からは、本実験もPythonによる実装に切り替える。 あわせて、現代のソフトウェア開発で必須となっている</p>
 <ul>
 <li><strong>Gitによるバージョン管理</strong></li>
 <li><strong><code>pytest</code> を用いた単体テスト</strong></li>
@@ -318,70 +293,70 @@ LISPの学習自体は本実験の到達目標から外したが、LISP版テキ
 <h2 data-number="1.2" class="anchored" data-anchor-id="学習する内容"><span class="header-section-number">1.2</span> 学習する内容</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 62%">
-<col style="width: 37%">
+<col style="width: 30%">
+<col style="width: 70%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: center;">章</th>
+<th>章</th>
 <th>内容</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">1</td>
+<td>1</td>
 <td>人工知能の歴史</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">2</td>
+<td>2</td>
 <td>実験環境の構築（VSCode + Dev Container）</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">3</td>
+<td>3</td>
 <td>Gitによるバージョン管理</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">4</td>
+<td>4</td>
 <td><code>pytest</code> によるテスト駆動開発の基礎</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">5</td>
+<td>5</td>
 <td>ゲーム理論とゲーム木</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">6</td>
+<td>6</td>
 <td>オセロゲームの基本実装</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">7</td>
+<td>7</td>
 <td>minimax法によるゲーム木探索</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">8</td>
+<td>8</td>
 <td>αβ枝刈り</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">9</td>
+<td>9</td>
 <td>ヒューリスティック評価関数</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">10</td>
+<td>10</td>
 <td>評価関数の改良と実験</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">11</td>
+<td>11</td>
 <td>メタヒューリスティクスによる評価関数の最適化（山登り法・焼きなまし法・GA）</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">12</td>
+<td>12</td>
 <td>発展：機械学習による評価関数の構築</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">13</td>
+<td>13</td>
 <td>対戦実験とGUI</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">14</td>
+<td>14</td>
 <td>最終課題と評価</td>
 </tr>
 </tbody>
@@ -396,11 +371,11 @@ LISPの学習自体は本実験の到達目標から外したが、LISP版テキ
 </section>
 <section id="完成像" class="level2 page-columns page-full" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="完成像"><span class="header-section-number">1.3</span> 完成像</h2>
-<p>最終的には、<code>reversi_yourid.py</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> という1つのPythonファイルとして、</p>
+<p>最終的には、<code>reversi_yourid.py</code> という1つのPythonファイルとして、</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>We know from <em>the first fundamental theorem of calculus</em> that for <span class="math inline">\(x\)</span> in <span class="math inline">\([a, b]\)</span>:</p>
-<p><span class="math display">\[\frac{d}{dx}\left( \int_{a}^{x} f(u)\,du\right)=f(x).\]</span></p>
+<p><code>yourid</code> は自分のID(24xxx など)に置き換えること。</p>
+<p><code>reversi_24000.py</code> などとすること。</p>
 </div></div><ul>
 <li>人間 vs 人間</li>
 <li>人間 vs コンピュータ（minimax / αβ）</li>
@@ -414,12 +389,6 @@ LISPの学習自体は本実験の到達目標から外したが、LISP版テキ
 
 
 </section>
-</section>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p><code>yourid</code> は自分のIDに置き換えること。24xxx など。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
 </section>
 
 </main> <!-- /main -->

@@ -14,7 +14,7 @@
     "href": "index.html#本実験の特徴",
     "title": "知能工学実験Ⅱ",
     "section": "1.1 本実験の特徴",
-    "text": "1.1 本実験の特徴\n旧教材（2025年度まで）ではプログラミング言語としてLISPを用いていた。 LISPは記号処理に特化した古典的な人工知能言語であり、ゲーム木探索や知識表現の研究で長く使われてきた。 しかし、近年の機械学習・深層学習・生成AI研究は、ライブラリと開発エコシステムの豊かさからPythonが事実上の標準言語となっている。 そこで2026年度からは、本実験もPythonによる実装に切り替える。 あわせて、現代のソフトウェア開発で必須となっている\n\nGitによるバージョン管理\npytest を用いた単体テスト\nVSCode + Dev Container による再現可能な開発環境\n\nを実験のフレームワークとして組み込む。",
+    "text": "1.1 本実験の特徴\n旧教材（2025年度まで）ではプログラミング言語としてLISPを用いていた。 LISPは記号処理に特化した古典的な人工知能言語であり、ゲーム木探索や知識表現の研究で長く使われてきた。 しかし、近年の機械学習・深層学習・生成AI研究は、ライブラリと開発エコシステムの豊かさからPythonが事実上の標準言語となっている。\n\n\nLISPは、人工知能の黎明期から使われてきた歴史的な言語であり、シンプルな構文と強力なマクロ機能を持つ。 その抽象性の高さは、ラムダ計算や関数型プログラミング言語としての側面を持ち、現代でも重要な言語の一つである。\nそこで2026年度からは、本実験もPythonによる実装に切り替える。 あわせて、現代のソフトウェア開発で必須となっている\n\nGitによるバージョン管理\npytest を用いた単体テスト\nVSCode + Dev Container による再現可能な開発環境\n\nを実験のフレームワークとして組み込む。",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
     ]
@@ -34,7 +34,7 @@
     "href": "index.html#完成像",
     "title": "知能工学実験Ⅱ",
     "section": "1.3 完成像",
-    "text": "1.3 完成像\n最終的には、reversi_yourid.py1 という1つのPythonファイルとして、\n\n\nWe know from the first fundamental theorem of calculus that for \\(x\\) in \\([a, b]\\):\n\\[\\frac{d}{dx}\\left( \\int_{a}^{x} f(u)\\,du\\right)=f(x).\\]\n\n人間 vs 人間\n人間 vs コンピュータ（minimax / αβ）\nコンピュータ vs コンピュータ\n\nの三通りのオセロゲームを実行できるプログラムを完成させる。 さらに、自分が設計した評価関数の特徴を実験データに基づいて説明できるようになることを目指す。",
+    "text": "1.3 完成像\n最終的には、reversi_yourid.py という1つのPythonファイルとして、\n\n\nyourid は自分のID(24xxx など)に置き換えること。\nreversi_24000.py などとすること。\n\n人間 vs 人間\n人間 vs コンピュータ（minimax / αβ）\nコンピュータ vs コンピュータ\n\nの三通りのオセロゲームを実行できるプログラムを完成させる。 さらに、自分が設計した評価関数の特徴を実験データに基づいて説明できるようになることを目指す。",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
     ]
@@ -45,16 +45,6 @@
     "title": "知能工学実験Ⅱ",
     "section": "1.4 本書の使い方",
     "text": "1.4 本書の使い方\n各章には例題と練習がある。 例題には基準となる実装例が示されているので、まずは写経し、動作を確認してから先に進む。 練習は、その章で学んだ関数を自分の手で実装する課題である。 どの練習にも動作確認用の assert 文がついているので、これが通ることを確認しながら進めること。 こまめに git commit し、テストが通った状態を残すこと。",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#footnotes",
-    "href": "index.html#footnotes",
-    "title": "知能工学実験Ⅱ",
-    "section": "",
-    "text": "yourid は自分のIDに置き換えること。24xxx など。↩︎",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>はじめに</span>"
     ]
@@ -274,7 +264,7 @@
     "href": "testdev.html#pytest-のインストールと実行",
     "title": "5  pytest によるテスト駆動",
     "section": "",
-    "text": "pip install pytest",
+    "text": "uv add pytest",
     "crumbs": [
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
     ]
