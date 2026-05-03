@@ -351,7 +351,7 @@ window.Quarto = {
 <li>パスなら、手番を交代して同じ深さで再帰呼び出しする。</li>
 <li>それ以外なら、子節点を生成して <code>alpha_beta_children()</code> で選ぶ。</li>
 </ul>
-<p><code>alpha</code> と <code>beta</code> は、最初はまだ値がないため <code>None</code> を渡す（呼び出し側で <code>alpha_beta(node, turn, count, depth, None, None)</code> のようにする）。</p>
+<p><code>alpha</code> と <code>beta</code> の初期値は、先手の下限を <span class="math inline">\(-\infty\)</span>、後手の上限を <span class="math inline">\(+\infty\)</span> として設定する。 Pythonでは <code>import math</code> したうえで <code>alpha_beta(node, turn, count, depth, -math.inf, math.inf)</code> のように呼び出す。</p>
 </section>
 </section>
 <section id="子節点の探索" class="level2" data-number="9.3">
@@ -371,22 +371,22 @@ window.Quarto = {
 <span id="cb2-10"><a href="#cb2-10"></a>            <span class="cf">if</span> val <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> v <span class="op">&gt;</span> val:</span>
 <span id="cb2-11"><a href="#cb2-11"></a>                val <span class="op">=</span> v</span>
 <span id="cb2-12"><a href="#cb2-12"></a>                result_node <span class="op">=</span> Node(child.board, child.turn, child.row, child.col, v)</span>
-<span id="cb2-13"><a href="#cb2-13"></a>            <span class="cf">if</span> alpha <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> v <span class="op">&gt;</span> alpha:</span>
+<span id="cb2-13"><a href="#cb2-13"></a>            <span class="cf">if</span> v <span class="op">&gt;</span> alpha:</span>
 <span id="cb2-14"><a href="#cb2-14"></a>                alpha <span class="op">=</span> v</span>
 <span id="cb2-15"><a href="#cb2-15"></a>        <span class="cf">elif</span> turn <span class="op">==</span> BOARD_GOTE:</span>
 <span id="cb2-16"><a href="#cb2-16"></a>            <span class="cf">if</span> val <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> v <span class="op">&lt;</span> val:</span>
 <span id="cb2-17"><a href="#cb2-17"></a>                val <span class="op">=</span> v</span>
 <span id="cb2-18"><a href="#cb2-18"></a>                result_node <span class="op">=</span> Node(child.board, child.turn, child.row, child.col, v)</span>
-<span id="cb2-19"><a href="#cb2-19"></a>            <span class="cf">if</span> beta <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> v <span class="op">&lt;</span> beta:</span>
+<span id="cb2-19"><a href="#cb2-19"></a>            <span class="cf">if</span> v <span class="op">&lt;</span> beta:</span>
 <span id="cb2-20"><a href="#cb2-20"></a>                beta <span class="op">=</span> v</span>
-<span id="cb2-21"><a href="#cb2-21"></a>        <span class="cf">if</span> alpha <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> beta <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> alpha <span class="op">&gt;=</span> beta:</span>
+<span id="cb2-21"><a href="#cb2-21"></a>        <span class="cf">if</span> alpha <span class="op">&gt;=</span> beta:</span>
 <span id="cb2-22"><a href="#cb2-22"></a>            <span class="cf">break</span></span>
 <span id="cb2-23"><a href="#cb2-23"></a>    <span class="cf">return</span> result_node</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>各部分の意味を確認する。</p>
 <ul>
 <li>先手番では、子節点の最大評価値を選び、<code>alpha</code>（下限）を更新する。</li>
 <li>後手番では、子節点の最小評価値を選び、<code>beta</code>（上限）を更新する。</li>
-<li>最後に <strong><code>alpha &gt;= beta</code></strong> になっていたらループを抜けて以降の子節点を探索しない（<strong>枝刈り</strong>）。</li>
+<li><strong><code>alpha &gt;= beta</code></strong> になったらループを抜けて以降の子節点を探索しない（<strong>枝刈り</strong>）。</li>
 </ul>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -394,11 +394,11 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>注意：<code>None</code> の扱い
+<span class="screen-reader-only">Tip</span><code>alpha</code> と <code>beta</code> の初期値
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>最初は <code>alpha</code> も <code>beta</code> も <code>None</code> である。 比較の前に必ず <code>is not None</code> を確認する。 これは「まだ何も値がない」状態を表すためのものである。 最初の子の評価値が決まれば、<code>alpha</code>（または <code>beta</code>）はその値で初期化される。</p>
+<p>呼び出し元から <code>-math.inf</code> と <code>math.inf</code> を渡すため、最初の子節点では必ず <code>v &gt; alpha</code>（または <code>v &lt; beta</code>）が成立し、<code>alpha</code>（または <code>beta</code>）が更新される。 <code>-math.inf</code> は「先手はまだ何も確保できていない」、<code>math.inf</code> は「後手はまだ何も確保できていない」ことを表す。</p>
 </div>
 </div>
 </section>
@@ -411,7 +411,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">def</span> play_by_machine(board, turn, count, depth):</span>
 <span id="cb3-2"><a href="#cb3-2"></a>    node <span class="op">=</span> Node(board, turn, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.0</span>)</span>
 <span id="cb3-3"><a href="#cb3-3"></a>    <span class="co"># best_node = minimax(node, turn, count, depth)</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a>    best_node <span class="op">=</span> alpha_beta(node, turn, count, depth, <span class="va">None</span>, <span class="va">None</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>    best_node <span class="op">=</span> alpha_beta(node, turn, count, depth, <span class="op">-</span>math.inf, math.inf)</span>
 <span id="cb3-5"><a href="#cb3-5"></a>    row, col <span class="op">=</span> best_node.row, best_node.col</span>
 <span id="cb3-6"><a href="#cb3-6"></a>    board_move(board, row, col, turn)</span>
 <span id="cb3-7"><a href="#cb3-7"></a>    <span class="bu">print</span>(<span class="ss">f"(</span><span class="sc">{</span>count<span class="sc">}</span><span class="ss">) My move is </span><span class="sc">{</span>row <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>col <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -430,7 +430,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> play_by_machine(board, turn, count, depth):</span>
 <span id="cb4-2"><a href="#cb4-2"></a>    node <span class="op">=</span> Node(board, turn, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.0</span>)</span>
 <span id="cb4-3"><a href="#cb4-3"></a>    <span class="cf">if</span> USE_ALPHA_BETA:</span>
-<span id="cb4-4"><a href="#cb4-4"></a>        best_node <span class="op">=</span> alpha_beta(node, turn, count, depth, <span class="va">None</span>, <span class="va">None</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>        best_node <span class="op">=</span> alpha_beta(node, turn, count, depth, <span class="op">-</span>math.inf, math.inf)</span>
 <span id="cb4-5"><a href="#cb4-5"></a>    <span class="cf">else</span>:</span>
 <span id="cb4-6"><a href="#cb4-6"></a>        best_node <span class="op">=</span> minimax(node, turn, count, depth)</span>
 <span id="cb4-7"><a href="#cb4-7"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -460,7 +460,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">def</span> play_by_machine(board, turn, count, depth):</span>
 <span id="cb6-2"><a href="#cb6-2"></a>    node_check_begin()</span>
 <span id="cb6-3"><a href="#cb6-3"></a>    node <span class="op">=</span> Node(board, turn, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.0</span>)</span>
-<span id="cb6-4"><a href="#cb6-4"></a>    best_node <span class="op">=</span> alpha_beta(node, turn, count, depth, <span class="va">None</span>, <span class="va">None</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    best_node <span class="op">=</span> alpha_beta(node, turn, count, depth, <span class="op">-</span>math.inf, math.inf)</span>
 <span id="cb6-5"><a href="#cb6-5"></a>    node_check_end()</span>
 <span id="cb6-6"><a href="#cb6-6"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
@@ -526,7 +526,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">import</span> time</span>
 <span id="cb7-2"><a href="#cb7-2"></a></span>
 <span id="cb7-3"><a href="#cb7-3"></a>start <span class="op">=</span> time.perf_counter()</span>
-<span id="cb7-4"><a href="#cb7-4"></a>best_node <span class="op">=</span> alpha_beta(node, turn, count, depth, <span class="va">None</span>, <span class="va">None</span>)</span>
+<span id="cb7-4"><a href="#cb7-4"></a>best_node <span class="op">=</span> alpha_beta(node, turn, count, depth, <span class="op">-</span>math.inf, math.inf)</span>
 <span id="cb7-5"><a href="#cb7-5"></a>elapsed <span class="op">=</span> time.perf_counter() <span class="op">-</span> start</span>
 <span id="cb7-6"><a href="#cb7-6"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>elapsed<span class="sc">:.3f}</span><span class="ss"> sec"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
