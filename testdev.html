@@ -318,13 +318,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="はじめてのテストassert-文" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="はじめてのテストassert-文"><span class="header-section-number">5.2</span> はじめてのテスト：<code>assert</code> 文</h2>
-<p>Python には <code>assert 条件</code> という構文があり、条件が偽のときに <code>AssertionError</code> を発生させる。 これだけでも簡単なテストになる。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">def</span> square(x):</span>
-<span id="cb2-2"><a href="#cb2-2"></a>    <span class="cf">return</span> x <span class="op">*</span> x</span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="cf">assert</span> square(<span class="dv">2</span>) <span class="op">==</span> <span class="dv">4</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="cf">assert</span> square(<span class="op">-</span><span class="dv">3</span>) <span class="op">==</span> <span class="dv">9</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Python には <code>assert 条件</code> という構文があり、条件が偽のときに <code>AssertionError</code> を発生させる。 これだけでも簡単なテストになる。 まず、練習用として <code>mymath.py</code> というファイルを作り、次のコードを書いて実行してみる。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># mymath.py</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">def</span> square(x):</span>
+<span id="cb2-3"><a href="#cb2-3"></a>    <span class="cf">return</span> x <span class="op">*</span> x</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="cf">assert</span> square(<span class="dv">2</span>) <span class="op">==</span> <span class="dv">4</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="cf">assert</span> square(<span class="op">-</span><span class="dv">3</span>) <span class="op">==</span> <span class="dv">9</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>スクリプトとして実行し、何も表示されなければテストは通っている。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">python</span> mymath.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="pytest-形式のテスト" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="pytest-形式のテスト"><span class="header-section-number">5.3</span> <code>pytest</code> 形式のテスト</h2>
@@ -335,75 +337,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>関数内で <code>assert</code> を使う</li>
 </ul>
 <p>例として、<code>test_square.py</code> を作って次のように書く。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># test_square.py</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> mymath <span class="im">import</span> square</span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="kw">def</span> test_square_positive():</span>
-<span id="cb3-6"><a href="#cb3-6"></a>    <span class="cf">assert</span> square(<span class="dv">2</span>) <span class="op">==</span> <span class="dv">4</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a></span>
-<span id="cb3-8"><a href="#cb3-8"></a></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="kw">def</span> test_square_negative():</span>
-<span id="cb3-10"><a href="#cb3-10"></a>    <span class="cf">assert</span> square(<span class="op">-</span><span class="dv">3</span>) <span class="op">==</span> <span class="dv">9</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a></span>
-<span id="cb3-12"><a href="#cb3-12"></a></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="kw">def</span> test_square_zero():</span>
-<span id="cb3-14"><a href="#cb3-14"></a>    <span class="cf">assert</span> square(<span class="dv">0</span>) <span class="op">==</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># test_square.py</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="im">from</span> mymath <span class="im">import</span> square</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="kw">def</span> test_square_positive():</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    <span class="cf">assert</span> square(<span class="dv">2</span>) <span class="op">==</span> <span class="dv">4</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="kw">def</span> test_square_negative():</span>
+<span id="cb4-10"><a href="#cb4-10"></a>    <span class="cf">assert</span> square(<span class="op">-</span><span class="dv">3</span>) <span class="op">==</span> <span class="dv">9</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a></span>
+<span id="cb4-12"><a href="#cb4-12"></a></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="kw">def</span> test_square_zero():</span>
+<span id="cb4-14"><a href="#cb4-14"></a>    <span class="cf">assert</span> square(<span class="dv">0</span>) <span class="op">==</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>ターミナルで次のように実行する。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">python</span> <span class="at">-m</span> pytest</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="ex">python</span> <span class="at">-m</span> pytest</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>すべてのテストが通れば次のような表示になる。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>=========== 3 passed in 0.01s ===========</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1"></a>=========== 3 passed in 0.01s ===========</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>-v</code> オプションをつけると、テスト関数ごとに結果が表示される。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">python</span> <span class="at">-m</span> pytest <span class="at">-v</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">python</span> <span class="at">-m</span> pytest <span class="at">-v</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="失敗するテストの読み方" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="失敗するテストの読み方"><span class="header-section-number">5.4</span> 失敗するテストの読み方</h2>
 <p><code>square</code> 関数を <code>return x + x</code> と間違えて書いてしまった場合、テストは失敗する。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>FAILED test_square.py::test_square_positive - assert 4 == 4</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>FAILED test_square.py::test_square_positive - assert 4 == 4</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>実際の出力には、どの行で失敗したか、左辺と右辺がどのような値だったかが表示される。 この出力を見ながら、コードのどこが間違っているかを推測してデバッグする。</p>
 </section>
 <section id="オセロのテスト例先取り" class="level2" data-number="5.5">
 <h2 data-number="5.5" class="anchored" data-anchor-id="オセロのテスト例先取り"><span class="header-section-number">5.5</span> オセロのテスト例（先取り）</h2>
 <p>第6章で実装する <code>initial_board()</code> などの関数に対しては、次のようにテストを書く。 本書の各練習問題には動作確認用の <code>assert</code> 文がついているので、そのまま <code>test_*</code> 関数の中身に貼り付けてテストにできる。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># test_reversi.py</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="im">from</span> reversi_yourid <span class="im">import</span> (</span>
-<span id="cb8-3"><a href="#cb8-3"></a>    BOARD_SENTE, BOARD_GOTE, BOARD_EMPTY, BOARD_SIZE,</span>
-<span id="cb8-4"><a href="#cb8-4"></a>    initial_board, change_turn,</span>
-<span id="cb8-5"><a href="#cb8-5"></a>    board_movable, board_movable_any, board_move,</span>
-<span id="cb8-6"><a href="#cb8-6"></a>    board_number_check,</span>
-<span id="cb8-7"><a href="#cb8-7"></a>)</span>
-<span id="cb8-8"><a href="#cb8-8"></a></span>
-<span id="cb8-9"><a href="#cb8-9"></a></span>
-<span id="cb8-10"><a href="#cb8-10"></a><span class="kw">def</span> test_initial_board():</span>
-<span id="cb8-11"><a href="#cb8-11"></a>    board <span class="op">=</span> initial_board()</span>
-<span id="cb8-12"><a href="#cb8-12"></a>    <span class="cf">assert</span> board[<span class="dv">3</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_GOTE</span>
-<span id="cb8-13"><a href="#cb8-13"></a>    <span class="cf">assert</span> board[<span class="dv">3</span>][<span class="dv">4</span>] <span class="op">==</span> BOARD_SENTE</span>
-<span id="cb8-14"><a href="#cb8-14"></a>    <span class="cf">assert</span> board[<span class="dv">4</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_SENTE</span>
-<span id="cb8-15"><a href="#cb8-15"></a>    <span class="cf">assert</span> board[<span class="dv">4</span>][<span class="dv">4</span>] <span class="op">==</span> BOARD_GOTE</span>
-<span id="cb8-16"><a href="#cb8-16"></a>    <span class="cf">assert</span> board[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">==</span> BOARD_EMPTY</span>
-<span id="cb8-17"><a href="#cb8-17"></a></span>
-<span id="cb8-18"><a href="#cb8-18"></a></span>
-<span id="cb8-19"><a href="#cb8-19"></a><span class="kw">def</span> test_change_turn():</span>
-<span id="cb8-20"><a href="#cb8-20"></a>    <span class="cf">assert</span> change_turn(BOARD_SENTE) <span class="op">==</span> BOARD_GOTE</span>
-<span id="cb8-21"><a href="#cb8-21"></a>    <span class="cf">assert</span> change_turn(BOARD_GOTE) <span class="op">==</span> BOARD_SENTE</span>
-<span id="cb8-22"><a href="#cb8-22"></a></span>
-<span id="cb8-23"><a href="#cb8-23"></a></span>
-<span id="cb8-24"><a href="#cb8-24"></a><span class="kw">def</span> test_initial_legal_moves():</span>
-<span id="cb8-25"><a href="#cb8-25"></a>    board <span class="op">=</span> initial_board()</span>
-<span id="cb8-26"><a href="#cb8-26"></a>    moves <span class="op">=</span> [</span>
-<span id="cb8-27"><a href="#cb8-27"></a>        (row, col)</span>
-<span id="cb8-28"><a href="#cb8-28"></a>        <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(BOARD_SIZE)</span>
-<span id="cb8-29"><a href="#cb8-29"></a>        <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(BOARD_SIZE)</span>
-<span id="cb8-30"><a href="#cb8-30"></a>        <span class="cf">if</span> board_movable(board, row, col, BOARD_SENTE)</span>
-<span id="cb8-31"><a href="#cb8-31"></a>    ]</span>
-<span id="cb8-32"><a href="#cb8-32"></a>    <span class="cf">assert</span> <span class="bu">len</span>(moves) <span class="op">==</span> <span class="dv">4</span></span>
-<span id="cb8-33"><a href="#cb8-33"></a></span>
-<span id="cb8-34"><a href="#cb8-34"></a></span>
-<span id="cb8-35"><a href="#cb8-35"></a><span class="kw">def</span> test_move_flips_stone():</span>
-<span id="cb8-36"><a href="#cb8-36"></a>    board <span class="op">=</span> initial_board()</span>
-<span id="cb8-37"><a href="#cb8-37"></a>    board_move(board, <span class="dv">2</span>, <span class="dv">3</span>, BOARD_SENTE)</span>
-<span id="cb8-38"><a href="#cb8-38"></a>    <span class="cf">assert</span> board[<span class="dv">2</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_SENTE</span>
-<span id="cb8-39"><a href="#cb8-39"></a>    <span class="cf">assert</span> board[<span class="dv">3</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_SENTE</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># test_reversi.py</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="im">from</span> reversi_yourid <span class="im">import</span> (</span>
+<span id="cb9-3"><a href="#cb9-3"></a>    BOARD_SENTE, BOARD_GOTE, BOARD_EMPTY, BOARD_SIZE,</span>
+<span id="cb9-4"><a href="#cb9-4"></a>    initial_board, change_turn,</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    board_movable, board_movable_any, board_move,</span>
+<span id="cb9-6"><a href="#cb9-6"></a>    board_number_check,</span>
+<span id="cb9-7"><a href="#cb9-7"></a>)</span>
+<span id="cb9-8"><a href="#cb9-8"></a></span>
+<span id="cb9-9"><a href="#cb9-9"></a></span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="kw">def</span> test_initial_board():</span>
+<span id="cb9-11"><a href="#cb9-11"></a>    board <span class="op">=</span> initial_board()</span>
+<span id="cb9-12"><a href="#cb9-12"></a>    <span class="cf">assert</span> board[<span class="dv">3</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_GOTE</span>
+<span id="cb9-13"><a href="#cb9-13"></a>    <span class="cf">assert</span> board[<span class="dv">3</span>][<span class="dv">4</span>] <span class="op">==</span> BOARD_SENTE</span>
+<span id="cb9-14"><a href="#cb9-14"></a>    <span class="cf">assert</span> board[<span class="dv">4</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_SENTE</span>
+<span id="cb9-15"><a href="#cb9-15"></a>    <span class="cf">assert</span> board[<span class="dv">4</span>][<span class="dv">4</span>] <span class="op">==</span> BOARD_GOTE</span>
+<span id="cb9-16"><a href="#cb9-16"></a>    <span class="cf">assert</span> board[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">==</span> BOARD_EMPTY</span>
+<span id="cb9-17"><a href="#cb9-17"></a></span>
+<span id="cb9-18"><a href="#cb9-18"></a></span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="kw">def</span> test_change_turn():</span>
+<span id="cb9-20"><a href="#cb9-20"></a>    <span class="cf">assert</span> change_turn(BOARD_SENTE) <span class="op">==</span> BOARD_GOTE</span>
+<span id="cb9-21"><a href="#cb9-21"></a>    <span class="cf">assert</span> change_turn(BOARD_GOTE) <span class="op">==</span> BOARD_SENTE</span>
+<span id="cb9-22"><a href="#cb9-22"></a></span>
+<span id="cb9-23"><a href="#cb9-23"></a></span>
+<span id="cb9-24"><a href="#cb9-24"></a><span class="kw">def</span> test_initial_legal_moves():</span>
+<span id="cb9-25"><a href="#cb9-25"></a>    board <span class="op">=</span> initial_board()</span>
+<span id="cb9-26"><a href="#cb9-26"></a>    moves <span class="op">=</span> [</span>
+<span id="cb9-27"><a href="#cb9-27"></a>        (row, col)</span>
+<span id="cb9-28"><a href="#cb9-28"></a>        <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(BOARD_SIZE)</span>
+<span id="cb9-29"><a href="#cb9-29"></a>        <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(BOARD_SIZE)</span>
+<span id="cb9-30"><a href="#cb9-30"></a>        <span class="cf">if</span> board_movable(board, row, col, BOARD_SENTE)</span>
+<span id="cb9-31"><a href="#cb9-31"></a>    ]</span>
+<span id="cb9-32"><a href="#cb9-32"></a>    <span class="cf">assert</span> <span class="bu">len</span>(moves) <span class="op">==</span> <span class="dv">4</span></span>
+<span id="cb9-33"><a href="#cb9-33"></a></span>
+<span id="cb9-34"><a href="#cb9-34"></a></span>
+<span id="cb9-35"><a href="#cb9-35"></a><span class="kw">def</span> test_move_flips_stone():</span>
+<span id="cb9-36"><a href="#cb9-36"></a>    board <span class="op">=</span> initial_board()</span>
+<span id="cb9-37"><a href="#cb9-37"></a>    board_move(board, <span class="dv">2</span>, <span class="dv">3</span>, BOARD_SENTE)</span>
+<span id="cb9-38"><a href="#cb9-38"></a>    <span class="cf">assert</span> board[<span class="dv">2</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_SENTE</span>
+<span id="cb9-39"><a href="#cb9-39"></a>    <span class="cf">assert</span> board[<span class="dv">3</span>][<span class="dv">3</span>] <span class="op">==</span> BOARD_SENTE</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="開発の流れ" class="level2" data-number="5.6">
 <h2 data-number="5.6" class="anchored" data-anchor-id="開発の流れ"><span class="header-section-number">5.6</span> 開発の流れ</h2>

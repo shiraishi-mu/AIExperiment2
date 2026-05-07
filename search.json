@@ -154,7 +154,7 @@
     "href": "setup.html#vscode-から-docker-コンテナを起動する",
     "title": "3  環境構築と準備",
     "section": "3.3 VSCode から Docker コンテナを起動する",
-    "text": "3.3 VSCode から Docker コンテナを起動する\nVSCode を起動し、lab_env フォルダを開く。 左下の緑色のアイコンをクリックし、「コンテナーで再度開く（Reopen in Container）」 を選択する。 これにより Docker コンテナが起動し、VSCode がコンテナ内で再起動される。\n\n\n\n\n\n\nWarning\n\n\n\n最初の起動はイメージのビルドが行われるため非常に時間がかかる。 授業時間のロスを避けるため、次回以降の実験では授業前にあらかじめ起動しておくこと。\n\n\nコンテナ内で VSCode が起動したら、ターミナルを開いて、次のコマンドで Python の実行環境が構築されていることを確認する。\npython --version\npip list | grep -E \"pytest|pygame\"\nPython 3.x.x と表示され、pytest と pygame がインストールされていれば成功である。",
+    "text": "3.3 VSCode から Docker コンテナを起動する\nVSCode を起動し、lab_env フォルダを開く。 左下の緑色のアイコンをクリックし、「コンテナーで再度開く（Reopen in Container）」 を選択する。 これにより Docker コンテナが起動し、VSCode がコンテナ内で再起動される。\n\n\n\n\n\n\nWarning\n\n\n\n最初の起動はイメージのビルドが行われるため非常に時間がかかる。 授業時間のロスを避けるため、次回以降の実験では授業前にあらかじめ起動しておくこと。\n\n\nコンテナ内で VSCode が起動したら、ターミナルを開いて、次のコマンドで Python の実行環境が構築されていることを確認する。\npython --version\nuv pip list | grep -E \"pytest|pygame\"\nPython 3.x.x と表示され、pytest と pygame がインストールされていれば成功である。",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>環境構築と準備</span>"
     ]
@@ -274,7 +274,7 @@
     "href": "testdev.html#はじめてのテストassert-文",
     "title": "5  pytest によるテスト駆動",
     "section": "5.2 はじめてのテスト：assert 文",
-    "text": "5.2 はじめてのテスト：assert 文\nPython には assert 条件 という構文があり、条件が偽のときに AssertionError を発生させる。 これだけでも簡単なテストになる。\ndef square(x):\n    return x * x\n\nassert square(2) == 4\nassert square(-3) == 9\nスクリプトとして実行し、何も表示されなければテストは通っている。",
+    "text": "5.2 はじめてのテスト：assert 文\nPython には assert 条件 という構文があり、条件が偽のときに AssertionError を発生させる。 これだけでも簡単なテストになる。 まず、練習用として mymath.py というファイルを作り、次のコードを書いて実行してみる。\n# mymath.py\ndef square(x):\n    return x * x\n\nassert square(2) == 4\nassert square(-3) == 9\nスクリプトとして実行し、何も表示されなければテストは通っている。\npython mymath.py",
     "crumbs": [
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>`pytest` によるテスト駆動</span>"
     ]
